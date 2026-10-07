@@ -3,7 +3,7 @@ import ts from 'typescript';
 import { readFile, writeFile, mkdir, readdir } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { spawnSync } from 'node:child_process';
-import { validateJob, validateProposal, jobDigest, resultBranch, resumeAttempt } from './development-core.mjs';
+import { validateJob, validateProposal, jobDigest, resultBranch, resumeAttempt, DEVELOPMENT_ATTEMPTS, failureTransition } from './development-core.mjs';
 
 const repository = process.env.GITHUB_REPOSITORY;
 const githubToken = process.env.GITHUB_TOKEN;
@@ -89,13 +89,35 @@ for (const file of files) {
   const remote = await github(`contents/.sumac/results/${job.id}.json?ref=${encodeURIComponent(branch)}`);
   let state = remote ? JSON.parse(Buffer.from(remote.content, 'base64').toString('utf8')) : null;
   if (state && (state.digest !== jobDigest(job) || state.jobId !== job.id)) throw new Error('Checkpoint identity mismatch');
-  if (resumeAttempt(state, job.maxAttempts) === null) continue;
+  if (resumeAttempt(state, DEVELOPMENT_ATTEMPTS) === null) continue;
   selected = true;
   const head = await github('git/ref/heads/main');
   if (!await github(`git/ref/heads/${branch}`)) await github('git/refs', 'POST', { ref: `refs/heads/${branch}`, sha: head.object.sha });
   await initializeTrigger();
-  let attempt = resumeAttempt(state, job.maxAttempts);
-  while (attempt <= job.maxAttempts) {
+  async function diagnoseFailure() {
+    // A separate advisor plan and auditor review follow the two unsuccessful repairs.
+    // Persist the diagnostic run ID so interruption resumes rather than repeats it.
+    try {
+      if (!state.diagnosisRunId) {
+        const objective = JSON.stringify({ request: 'Diagnose the root cause after the initial attempt and two repairs failed. Propose concrete supported fixes and verification. Do not execute or claim a repair.', objective: job.objective, failures: state.failures ?? [{ attempt: state.attempt, feedback: state.feedback }] }).slice(0, 4000);
+        const handle = await tasks.trigger('sumac-advisor-audit', { jobId: job.id, objective },
+          { idempotencyKey: `diagnose-${job.id}-${state.digest}`, idempotencyKeyTTL: '7d' });
+        state = { ...state, diagnosisRunId: handle.id };
+        await checkpoint(branch, job.id, state);
+      }
+      const diagnosis = await runs.poll(state.diagnosisRunId, { pollIntervalMs: 3000 });
+      if (diagnosis.status !== 'COMPLETED' || diagnosis.output?.jobId !== job.id || !diagnosis.output?.plan || !diagnosis.output?.audit) throw new Error(`Advisor diagnosis ended with ${diagnosis.status}`);
+      state = { ...state, status: 'blocked', diagnosis: diagnosis.output, diagnosisStatus: 'completed' };
+    } catch (error) {
+      state = { ...state, status: 'blocked', diagnosisStatus: 'failed', diagnosisError: String(error.message).replace(/(?:tr_(?:pat|prod|dev)_|sk-ant-)[A-Za-z0-9_-]+/g, '[redacted]').slice(0, 2000) };
+    }
+    await checkpoint(branch, job.id, state);
+    console.log(JSON.stringify({ jobId: job.id, status: state.status, diagnosisStatus: state.diagnosisStatus, diagnosisRunId: state.diagnosisRunId }));
+    process.exitCode = 1;
+  }
+  if (state?.status === 'diagnosing') { await diagnoseFailure(); break; }
+  let attempt = resumeAttempt(state, DEVELOPMENT_ATTEMPTS);
+  while (attempt <= DEVELOPMENT_ATTEMPTS) {
     state = { ...state, jobId: job.id, digest: jobDigest(job), branch, attempt, status: 'running', workflow: runUrl, updatedAt: new Date().toISOString() };
     await checkpoint(branch, job.id, state);
     try {
@@ -144,14 +166,14 @@ for (const file of files) {
     } catch (error) {
       // No raw provider objects, keys, or unlimited diagnostic output are persisted.
       const feedback = String(error.message).replace(/(?:tr_(?:pat|prod|dev)_|sk-ant-)[A-Za-z0-9_-]+/g, '[redacted]').slice(0, 2000);
-      state = { ...state, feedback, status: attempt < job.maxAttempts ? 'retry' : 'blocked', attempt: attempt < job.maxAttempts ? attempt + 1 : attempt, handleId: null, updatedAt: new Date().toISOString() };
+      state = { ...failureTransition(state, feedback), updatedAt: new Date().toISOString() };
       await checkpoint(branch, job.id, state);
       console.log(JSON.stringify({ jobId: job.id, status: state.status, attempt }));
-      if (state.status === 'blocked') { process.exitCode = 1; break; }
+      if (state.status === 'diagnosing') { await diagnoseFailure(); break; }
       attempt = state.attempt;
     }
   }
-  break; // Bound each invocation to one job and at most two generation attempts.
+  break; // Bound each invocation to one job and an initial generation attempt plus two repairs.
 }
 if (!selected) {
   await writeFile(`${reportDir}/idle.json`, JSON.stringify({ status: 'idle', reason: 'No queued nonterminal jobs' }) + '\n');

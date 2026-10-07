@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { validateJob, validateProposal, resultBranch, resumeAttempt } from './development-core.mjs';
+import { validateJob, validateProposal, resultBranch, resumeAttempt, DEVELOPMENT_ATTEMPTS, failureTransition } from './development-core.mjs';
 const job = { id: 'test-job', objective: 'Return twice a numeric input', exportName: 'double', cases: [{ args: [1], expected: 2 }, { args: [2], expected: 4 }, { args: [0], expected: 0 }], maxAttempts: 2 };
 test('reject malformed jobs and traversal before calling any service', () => {
   assert.equal(validateJob(job), job);
@@ -23,4 +23,19 @@ test('stable branches distinguish changed jobs and terminal work is not repeated
   assert.equal(resumeAttempt({ status: 'passed' }, 2), null);
   assert.equal(resumeAttempt({ status: 'blocked' }, 2), null);
   assert.equal(resumeAttempt({ status: 'retry', attempt: 3 }, 2), null);
+});
+
+test('initial failure gets two repairs, then enters resumable advisor diagnosis', () => {
+  let state = { attempt: 1, handleId: 'original' };
+  state = failureTransition(state, 'initial failure');
+  assert.equal(state.status, 'retry'); assert.equal(state.attempt, 2);
+  state = failureTransition(state, 'first repair failed');
+  assert.equal(state.status, 'retry'); assert.equal(state.attempt, 3);
+  state = failureTransition(state, 'second repair failed');
+  assert.equal(state.status, 'diagnosing'); assert.equal(state.attempt, 3);
+  assert.equal(state.handleId, null);
+  assert.deepEqual(state.failures.map(f => f.attempt), [1, 2, 3]);
+  assert.equal(resumeAttempt(state, DEVELOPMENT_ATTEMPTS), 3);
+  assert.equal(resumeAttempt({ ...state, status: 'blocked' }, DEVELOPMENT_ATTEMPTS), null);
+  assert.equal(validateJob({ ...job, maxAttempts: 3 }).maxAttempts, 3);
 });

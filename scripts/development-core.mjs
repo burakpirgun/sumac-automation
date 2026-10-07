@@ -7,7 +7,7 @@ export function validateJob(job) {
   for (const c of job.cases) {
     if (!Array.isArray(c.args) || c.args.length > 10 || (c.throws !== true && !Object.hasOwn(c, 'expected'))) throw new Error('Case needs arguments and an expected result or throws=true');
   }
-  if (![1, 2].includes(job.maxAttempts)) throw new Error('Job attempts must be one or two');
+  if (![1, 2, 3].includes(job.maxAttempts)) throw new Error('Job attempts must be one, two, or three (legacy values use the current three-attempt policy)');
   return job;
 }
 export function jobDigest(job) { return createHash('sha256').update(JSON.stringify(job)).digest('hex').slice(0, 12); }
@@ -24,4 +24,13 @@ export function resumeAttempt(state, maxAttempts) {
   if (state?.status === 'passed' || state?.status === 'blocked') return null;
   const attempt = state?.attempt ?? 1;
   return attempt <= maxAttempts ? attempt : null;
+}
+
+// Preserve legacy manifest digests while applying the current retry policy.
+export const DEVELOPMENT_ATTEMPTS = 3;
+export function failureTransition(state, feedback) {
+  const attempt = state.attempt;
+  return { ...state, feedback, failures: [...(state.failures ?? []), { attempt, feedback }],
+    status: attempt < DEVELOPMENT_ATTEMPTS ? 'retry' : 'diagnosing',
+    attempt: attempt < DEVELOPMENT_ATTEMPTS ? attempt + 1 : attempt, handleId: null };
 }
