@@ -133,3 +133,83 @@ Owner requested a fresh deployment test. Native deploy still returned411; harmle
 ## Current handoff — 2026-10-07 UTC
 
 The owner created private repository burakpirgun/sumac-automation. Source and deployment handoff are prepared for Claude Code cloud. Both Development tests passed; Production deployment and hosted execution remain unverified. Depot fallback launched a builder but could not connect through the previous environment network; local attempt was interrupted. See DEPLOYMENT.md for next steps.
+
+## Claude Code cloud retry — 2026-10-07 UTC
+
+Production deployment was **not** retried to completion: it could not start. No deployment version, no Production run IDs. Nothing changed in Trigger.dev.
+
+| Check | Result |
+| --- | --- |
+| `npm ci` | Failed: `registry.npmjs.org` is not in this environment's network allowlist (proxy 403 "Host not in allowlist"). Partial npm cache is incomplete (`npm ci --offline` → ENOTCACHED for `zod-validation-error`, a `@trigger.dev/core` dependency). |
+| `npm run check` | Failed only because `node_modules` is absent (`TS2688: Cannot find type definition file for 'node'`); not a source error. |
+| Trigger.dev CLI (`npx trigger.dev@4.7.3`) | Not runnable: same npm registry block. `npm run trigger:deploy` not executed. |
+| `api.trigger.dev` via `sumac-trigger-access` | Works. `GET /api/v2/whoami` → 200 for the owner account; `GET /api/v1/projects` lists `proj_vjirfqjbxrwdblvnjyjm` (sumac-automation, org Taste of Turkiye). Token behaves as a personal access token. |
+| Proxy header behavior | The proxy replaces any client `Authorization` header: a request with a placeholder `Bearer tr_pat_…` still returned 200. |
+| Production runs | `GET /api/v1/projects/proj_vjirfqjbxrwdblvnjyjm/runs?filter[env]=prod` → empty. Dev runs listed as COMPLETED (matches earlier record). Hosted execution remains unverified. |
+
+### Authentication mismatch
+
+The CLI expects a `TRIGGER_ACCESS_TOKEN` env var (or a `trigger login` profile). This environment provides neither; auth is injected only at the network layer. Because the proxy overwrites the header, the CLI should work with a **non-secret placeholder** such as `TRIGGER_ACCESS_TOKEN=tr_pat_` followed by dummy characters, plus `NODE_USE_ENV_PROXY=1` (Node 22.22 here). This is untested end to end because the CLI cannot be installed. Note: deploy also uploads to Trigger.dev's object storage host (and with `--depot-build`, Depot). Those hosts may also need to be allowlisted.
+
+### Owner action needed
+
+In the Claude Code cloud environment settings (Edit environment → Network access), allow `registry.npmjs.org` (for example, Custom with the default package-manager list kept). Then retry: `npm ci && npm run check`, then `TRIGGER_ACCESS_TOKEN=<placeholder> NODE_USE_ENV_PROXY=1 npm run trigger:deploy`. After that, trigger both tasks with `{}` in Production and record the results here. No secrets were printed or stored.
+
+## Retry after allowlist change — 2026-10-07 UTC
+
+Owner reported adding `registry.npmjs.org`. In this still-running session, the proxy keeps refusing it: `npm ci` gets 403 on `zod-validation-error-5.0.0.tgz`, and repeated direct requests return "Host not in allowlist: registry.npmjs.org". `api.trigger.dev` still returns 200. The updated network policy is likely applied only when a session or container starts. Deploy was not run, and there are still no Production deployments or runs. Next: start a new cloud session on this branch with the updated environment, then follow the steps under "Owner action needed" above.
+
+## New session retry — 2026-10-07 UTC
+
+`https://registry.npmjs.org/typescript` returned HTTP 200, so the updated allowlist is now active.
+
+| Check | Result |
+| --- | --- |
+| `npm ci` | Passed |
+| `npm run check` | Passed |
+| `npm run trigger:deploy` (placeholder `TRIGGER_ACCESS_TOKEN`, `NODE_USE_ENV_PROXY=1`, CLI 4.7.3) | **Failed.** Build passed locally (`Successfully built code`), then `Failed to start deployment: Invalid API key`. |
+| Debug log | `Initializing prod environment for project proj_vjirfqjbxrwdblvnjyjm` passed (PAT-authenticated call). The next call, `Failed to fetch deploy settings`, returned 401 `Invalid API key`. The CLI then fell back to the Depot path and failed at deployment start with the same error. |
+| Production deployment version | None. No deployment was created. |
+| Production runs | None. Tasks are not deployed, so `sumac-health-check` and `sumac-claude-access-check` were not run in Production. |
+
+### Diagnosis (likely, not fully proven)
+
+After the PAT-authenticated environment lookup, the CLI switches to the Production environment's API key (`tr_prod_…`) for deployment calls. As recorded above, the proxy replaces any client `Authorization` header with the injected PAT. The deployment endpoints therefore receive a PAT where an environment key is expected and reject it as `Invalid API key`. A direct header-behavior probe was blocked by this session's safety classifier as credential exploration, so the probe was not run. The placeholder-token approach clears the first step but cannot complete a deploy in this setup.
+
+### Options for the owner
+
+1. **Recommended:** Configure the environment's network secret for `api.trigger.dev` to pass through, rather than overwrite, requests that already carry a `tr_prod_` bearer, or to inject only on `/api/v1/projects/*` and `/api/v2/whoami`. Then rerun the same command.
+2. Deploy from GitHub Actions or the owner's computer. Use a `TRIGGER_ACCESS_TOKEN` repository secret (for example, the official Trigger.dev GitHub Action). Then trigger both tasks with `{}` in Production.
+3. Explicitly approve a header-behavior probe in this session. Only status codes would be printed.
+
+No secrets were printed or stored. Nothing changed in Trigger.dev.
+
+## CLI source inspection and proxy-scoping assessment — 2026-10-07 UTC
+
+Read from the installed `trigger.dev@4.7.3` CLI source (`dist/esm/apiClient.js`, `utilities/session.js`, `commands/deploy.js`, `deploy/buildPath.js`). No requests were sent and no credentials were read.
+
+**Personal access token (`TRIGGER_ACCESS_TOKEN`, `tr_pat_`) calls during deploy:**
+- `GET /api/v2/whoami`
+- `GET /api/v1/projects/{ref}/prod`: returns the Production `apiKey` and `apiUrl`. `getProjectClient` then creates a second `CliApiClient` with that key (`session.js:60`).
+- The PAT is also passed to the image build step as `authAccessToken` (`deploy/buildImage.js`).
+
+**Production environment key calls (`Authorization: Bearer <apiKey>`):**
+- `GET /api/v1/projects/{ref}/prod/deploy-settings`: failure is non-fatal; the CLI falls back to the Depot path (`buildPath.js`).
+- `GET /api/v1/projects/{ref}/envvars`
+- `GET /api/v1/remote-build-provider-status`
+- `POST /api/v1/artifacts`
+- `POST /api/v1/deployments`: the call that produced `Failed to start deployment: Invalid API key`.
+- `GET /api/v1/deployments/{id}`, `POST /api/v1/deployments/{id}/generate-registry-credentials`, `/background-workers`, `/start-indexing`, `/fail`
+- `POST /api/v3/deployments/{id}/finalize`
+- Triggering tasks: `POST /api/v1/tasks/{id}/trigger`. The CLI has no trigger command; `runs list/get/replay/cancel` also use the environment key.
+
+**Can path-scoped injection fix it? No.**
+1. The public cloud-environments documentation (API credentials section) matches credentials by **host only**: "The agent proxy attaches a credential to a request when the request's host matches one you listed." It documents no path-prefix, method, or pass-through-if-present setting.
+2. Even with prefix scoping, it would not separate the calls: `/api/v1/projects/{ref}/prod/deploy-settings` and `/api/v1/projects/{ref}/envvars` share prefixes with the PAT path `/api/v1/projects/{ref}/prod`. Both token types use the same host.
+3. The session's credential listing describes path/method restrictions as causing 403 on other paths. That blocks environment-key calls instead of passing them through.
+
+This shows the 401 matches header replacement, but the proxy's behavior on these specific requests was not directly observed. **Cause remains unconfirmed.**
+
+**Recommended path: GitHub Actions.** Added `.github/workflows/deploy-trigger.yml` (manual `workflow_dispatch`) and `scripts/run-prod-tests.mjs`. The workflow runs `npm ci`, `npm run check`, and `trigger.dev@4.7.3 deploy --env prod`. It then triggers both tasks with `{}` in Production and polls until they finish. The test script retrieves the Production key with the PAT exactly as the CLI does, keeps it in memory, and prints only task ID, run ID, status, version, and output. The only secret needed is `TRIGGER_ACCESS_TOKEN`.
+
+Owner action: create a Trigger.dev personal access token (Account → Personal Access Tokens). Add it as the repository secret `TRIGGER_ACCESS_TOKEN` (GitHub repo → Settings → Secrets and variables → Actions). Then run the "Deploy Trigger.dev (Production)" workflow.

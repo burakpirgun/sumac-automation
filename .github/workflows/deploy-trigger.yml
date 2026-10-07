@@ -1,0 +1,36 @@
+name: Deploy Trigger.dev (Production)
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_tests:
+        description: "Run both tasks in Production after deploying"
+        type: boolean
+        default: true
+
+concurrency:
+  group: trigger-deploy-prod
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      TRIGGER_ACCESS_TOKEN: ${{ secrets.TRIGGER_ACCESS_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run check
+      - name: Deploy
+        run: npx --yes trigger.dev@4.7.3 deploy --env prod --skip-update-check
+      - name: Run Production tests
+        if: ${{ inputs.run_tests }}
+        run: node scripts/run-prod-tests.mjs
