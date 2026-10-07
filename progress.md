@@ -238,3 +238,14 @@ Automatic push workflow run https://github.com/burakpirgun/sumac-automation/acti
 - sumac-advisor-audit: run_06gh8ce0jscub7d4boecrgiu01, COMPLETED, status advice_ready, audit verdict pass, executionPerformed=false.
 
 The advisory task generated and audited a hypothetical recipe pre-publication check. It did not actually inspect or modify a recipe. This verifies the bounded advisor/audit pipeline, not autonomous code execution or overnight task pickup. Workflow path filters exclude progress/documentation-only changes. Existing manual dispatch remains available.
+
+
+## Expanded standing authorization — October 6, 2026 (America/Chicago)
+
+The owner explicitly authorized building, operating, and maintaining Sumac automation across sessions, including unattended work.
+
+Authorized: code changes; dependency installation; branches and pull requests; review and merges; workflows and schedules; Sumac deployments; tests and audits; log inspection; failure resolution; retries; rollback of agent changes; automatic Production deployments/tests after relevant main changes; development-job execution; queues; recovery; progress tracking; completion/failure notifications through owner-designated channels. Existing connected services may be used within existing subscriptions, credits, and configured spending limits. Routine actions within this scope do not require repeated confirmation.
+
+Owner-controlled exclusions: new accounts, purchases, credit top-ups, subscription changes, increased spending limits, account profiles, security and ownership changes, destructive or irreversible actions, major DNS changes, enabling website indexing. Existing websites and unrelated projects must not be modified.
+
+Keep credentials private, preserve recoverability, distinguish verified results from assumptions, and record progress. Investigate supported alternatives for platform blockers; do not bypass safeguards. This authorization does not itself implement an unattended worker or guarantee this chat continues running after the session ends. Notification channels have not yet been designated/configured.
