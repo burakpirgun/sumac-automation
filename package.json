@@ -1,0 +1,23 @@
+{
+  "name": "sumac-automation",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "check": "tsc --noEmit",
+    "trigger:dev": "npx trigger.dev@4.7.3 dev",
+    "trigger:deploy": "npx trigger.dev@4.7.3 deploy --env prod"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@trigger.dev/sdk": "^4.7.3"
+  },
+  "devDependencies": {
+    "@trigger.dev/build": "^4.7.3",
+    "@types/node": "^26.6.4",
+    "typescript": "^5.9.3"
+  },
+  "private": true
+}

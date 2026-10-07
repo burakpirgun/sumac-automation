@@ -1,0 +1,135 @@
+# Sumac progress
+
+Updated: October 6, 2026 (America/Chicago)
+
+## Goal
+
+Build the new site with Sumac as its internal project name. Establish a background coding runner that can continue authorized tasks while the owner is offline, save progress, run checks, and report meaningful results or blockers.
+
+## Current status
+
+Local Trigger.dev setup is complete and TypeScript checks pass. CLI authentication is verified. The development worker registered successfully on branch default as version 20261007.1 (node-24). The first development health-check run completed successfully; the owner dashboard shows Completed and output ok: true. No unattended coding agent or recurring runner is operational.
+
+This directory is an isolated automation test project, not the new website application. The existing makarna.us codebase and the POC were not modified for this setup.
+
+## Completed
+
+- Created `/workspace/sumac-automation`.
+- Configured Trigger.dev project reference `proj_vjirfqjbxrwdblvnjyjm`.
+- Installed `@trigger.dev/sdk` and development dependency `@trigger.dev/build`, both version 4.7.3 at setup.
+- Created `trigger.config.ts` with Node runtime, `./src/trigger`, a 60-second maximum task duration, and development retries.
+- Exported `sumac-health-check` in `src/trigger/health-check.ts`. It logs and returns a timestamped success result; it does not edit code or call an AI model.
+- Included the configuration in TypeScript checks and ignored `.trigger`, dependencies, and secret environment files.
+- Ran `npm run check` successfully.
+- Resolved CLI network access by enabling Node's environment-proxy support.
+- Started browser authorization; completion was still pending at the last check.
+- Attempted the development worker; it stopped at missing CLI authentication. Dashboard registration is not confirmed.
+
+## Access and blockers
+
+| Service | Last verified state | Remaining work |
+| --- | --- | --- |
+| GitHub | Connector works as `burakpirgun`; existing repositories show admin/push permissions | Create the separate `sumac-web` repository; command-line authentication needs refreshing |
+| Vercel | Connector can list existing projects | Create separate `sumac-web`; domain cutover requires owner decision |
+| Sanity | Connector can list existing projects | Create separate `sumac-content`; existing content remains a read-only migration source |
+| Trigger.dev | Owner created `sumac-automation`; local configuration exists | Complete CLI authorization, securely configure Development key, register and execute task |
+| Anthropic API | Not configured for this runner | Owner opens account and chooses spending limit; configure credentials securely |
+
+The owner offered to configure `TRIGGER_SECRET_KEY`. This has not yet been confirmed or rechecked. No credential values or browser authorization links belong in this file.
+
+Supabase, Algolia, Resend, Beehiiv, Sentry, PostHog, Checkly, and Runway connections were not detected in the earlier access audit. They are not required for the initial health-check test. Northflank remains conditional on the coding runner's execution requirements.
+
+## Next steps
+
+1. Verify current credential readiness without printing secrets. Resume browser CLI authorization if necessary; ask the owner only for the authentication step they reserved.
+2. Start the development worker in this directory:
+
+   ```sh
+   NODE_USE_ENV_PROXY=1 XDG_CONFIG_HOME=/workspace/.config npm_config_cache=/workspace/.npm-cache npx --yes trigger.dev@latest dev
+   ```
+
+3. Confirm `sumac-health-check` is registered in the project's Development environment.
+4. Trigger a test run with a small message payload and verify completed status, logs, and returned result. Record the run ID and evidence here.
+5. Set up a real coding agent and persistent GitHub task queue. Prove that it completes two tasks consecutively, runs checks, saves changes, and recovers from an interrupted run.
+6. Establish a hosted runner before claiming overnight operation. A development worker depends on its execution environment staying alive; a successful health check alone does not prove unattended development.
+
+The npm script `trigger:dev` currently assumes the CLI is available. Use the explicit `npx` command above until CLI installation or script configuration is finalized.
+
+## Verification record
+
+| Check | Result |
+| --- | --- |
+| Dependency installation | Passed |
+| `npm run check` | Passed |
+| CLI authorization | Passed: login and project access verified |
+| Development task visible in dashboard | Passed: owner dashboard screenshot confirms task and version |
+| Health-check run completed | Passed: run_06gh7hao2mq4m1gu9mej0ekk01, Completed, output ok: true |
+| Overnight coding and recovery test | Not configured |
+
+## Standing project decisions
+
+- Use neutral Sumac names for new infrastructure, code, and schemas.
+- Final destination is `tasteofturkiye.org`: public without access control, with indexing disabled until explicitly authorized.
+- Owner reviews design and functionality on that domain.
+- Sanity controls editorial content and original images; shared templates and responsive image transformations make routine additions fast and safe.
+- Reader accounts are always optional. Public browsing, recipes, search, print, and cooking mode must not require login.
+- Preserve the existing makarna.us site and its projects. Preserve recovery options for the current Squarespace site before cutover.
+- Routine development and publishing are delegated. The owner retains spending, account creation, subscription levels, profile, access/security, consequential DNS changes, destructive operations, legal/commercial decisions, and major direction or indexing changes.
+- Planned checks include GitHub Actions and Playwright, plus independent review. These are not configured in this automation test project yet.
+
+## Handoff rule
+
+Before continuing, read this file and inspect the actual code and credential readiness. After meaningful work, update completed steps, verification evidence, blockers, and the next action. Never mark a remote operation successful without confirmation, store secrets here, or repeat a failed operation indefinitely without diagnosing it.
+
+## Latest checkpoint
+
+CLI login succeeded and confirmed access to the correct Sumac project. Development worker session 32623 reported: `Local worker ready on branch: default [node-24] -> 20261007.1`. Next: run `sumac-health-check` from the Development dashboard and verify the completed result. No Development secret key was requested or printed for this registration.
+
+## Successful development test
+
+Owner dashboard screenshot confirms run `run_06gh7hao2mq4m1gu9mej0ekk01` completed in approximately 5.7 seconds. Output includes `ok: true`, project `sumac-automation`, and message `Sumac background task is running`. This verifies development dispatch and task execution, not hosted overnight coding. Next account setup: Anthropic API for the planned coding agent, with owner-selected spending limit.
+
+## Claude worker integration prepared
+
+Owner reports saving ANTHROPIC_API_KEY in Trigger.dev Development and Production. Added exported task `sumac-claude-access-check` using built-in fetch and claude-sonnet-4-6, max_tokens 100, a 30-second request timeout, and one attempt. It checks an exact reply and logs only non-secret result/usage. TypeScript check passed. Remote Claude execution remains unverified until this task completes.
+
+## Claude integration verified
+
+Owner dashboard confirms Development run `run_06gh7p96gfkgl5eegog3s7p601` completed successfully in approximately 7.1 seconds. Output: `ok: true`, model `claude-sonnet-4-6`, reply `SUMAC_ADVISOR_READY`. This verifies the Trigger.dev development worker can call Anthropic with the configured credential. It does not verify substantive advisor/auditor behavior or hosted overnight execution. Next: deploy and verify a hosted test worker, then implement the advisor/auditor and coding task queue.
+
+## Hosted deployment blocked
+
+Production deployment was authorized and attempted. Authentication and task bundling passed; archive size approximately 1.94 MB. Artifact upload consistently returned HTTP 411 (Length Required), including explicit-length Node and curl transport checks through the existing proxy. No hosted deployment or Production run was confirmed. Temporary cached CLI modifications were restored. Development tests remain the only verified execution. Next: diagnose artifact upload compatibility or deploy the same source through a separate supported CI execution environment with securely configured Trigger.dev credentials. No website changes or billing changes were made.
+
+## Upload diagnosis and recovery package
+
+S3 returned MissingContentLength XML. Explicit Content-Length, HTTP/1.1 curl, and native build (20 KB archive) still returned 411 through this environment. CLI modifications restored. Prepared `/workspace/sumac-automation-deploy.zip` containing only source, lockfile, configuration, and empty secret example; no credentials or dependencies. A deployment from the owner computer can use browser CLI authentication and the existing Trigger.dev Production secret, avoiding this environment upload transport issue. Hosted test remains pending.
+
+## Claude upload consultation
+
+Claude Sonnet 4.6 was consulted through the verified Development worker, run `run_06gh7r9i7bnlpkcv5tp9vobv01`. Response saved in `claude-upload-advice.json`. It ranked proxy header rewriting as a hypothesis and suggested verifying response/request headers to discriminate causes. Its networking claims require independent verification (CONNECT alone does not imply TLS termination, and multipart field ordering claims are not established). No root cause proven or deployment fix confirmed. Temporary advisor mode removed; connection-test task and 60-second config restored.
+
+## Standing test authorization and latest diagnostic
+
+Owner explicitly authorizes deploying or running any test without repeat approval, subject to previously reserved spending/account/profile/security/domain/destructive/legal decisions. Deployment command now passes automatic approval review. Production artifact upload still returns HTTP 411. Echo probes confirmed larger bodies arrive as Transfer-Encoding: chunked despite client Content-Length; 10-byte requests retained Content-Length. Minimal native deployment multipart payloads of 17,859 and 15,830 bytes also failed. Cached CLI restored. Hosted deployment remains blocked by upload transport, not owner authorization.
+
+## Additional transport tests and Claude consultation
+
+Small multipart echo probes 140 through 15,130 bytes retained Content-Length. 20 KB probes arrived chunked; HTTP/1.1 and Expect100 did not prevent this. HTTP/1.0 probe did not return diagnostic JSON. Claude Sonnet4.6 second consultation completed via run `run_06gh7tvn3qif3d9judgv0gcp01`; advice saved in `claude-upload-advice-2.json`. Proposed serialization/compression/Expect combination was tested against S3: exact multipart size 15,783 bytes, still411. Deployment lockfile consistency passed npm ci dry-run. Removing a platform-optional lock entry failed consistency and was undone. All cached CLI modifications and the temporary advisor-mode task restored. No hosted deployment succeeded; transport diagnosis remains incomplete.
+
+## Minimal signed upload fails
+
+Third Claude consultation run `run_06gh7utfnhldbkjjhdl009js01` completed; advice saved in claude-upload-advice-3.json. It suggested a valid signed minimal form. Created a fresh Trigger.dev diagnostic artifact for a one-byte payload with all supplied signed fields; serialized multipart body was exactly 4,395 bytes with explicit Content-Length. S3 still returned411. Diagnostic stopped before deployment initialization. Archive-size theory insufficient; missing unsigned form fields are insufficient to explain the failure. No tested client-side remedy works; upstream framing/provider diagnosis required. CLI and connection-test source restored. Reproducer available in s3-upload-diagnostic.py.
+
+## Exa deep research
+
+Completed six Exa queries across three angles and fetched primary Envoy documentation/maintainer reports. Findings in upload-research.md. Documented ext_proc streaming removal of Content-Length closely matches observations, but actual proxy filter config is unverified. Buffering and final upstream header restoration are infrastructure-side remedies, not client curl flags. No verified client-side fix found. Hosted deployment still pending.
+
+## Retry after model change
+
+Owner requested a fresh deployment test. Native deploy still returned411; harmless S3 probe returned MissingContentLength with request ID JC4D8Q7KNMC54FKB. TypeScript passed. Independent review identified supported `--depot-build`, which uses BuildKit rather than S3 FormData. Attempt version20261007.1 failed writing /home/agent/.docker/buildx. Retried with DOCKER_CONFIG=/workspace/.docker and BUILDX_CONFIG=/workspace/.buildx: version20261007.2 launched a remote amd64 build machine, then stalled connecting. The attempt was interrupted with Ctrl-C (exit130). Depot source shows BuildKit client uses direct TCP/mTLS net.Dial, distinct from HTTP proxy traffic. This environment has no general Internet route or TCP grants; supported TCP forwarding is VPN/private-only. No bypass attempted. No Production task completion is verified. Changing model did not change network capabilities.
+
+
+## Current handoff — 2026-10-07 UTC
+
+The owner created private repository burakpirgun/sumac-automation. Source and deployment handoff are prepared for Claude Code cloud. Both Development tests passed; Production deployment and hosted execution remain unverified. Depot fallback launched a builder but could not connect through the previous environment network; local attempt was interrupted. See DEPLOYMENT.md for next steps.
