@@ -3,8 +3,33 @@
   "digest": "73a4fc797f82",
   "branch": "sumac/jobs/overnight-01-linear-scale-73a4fc797f82",
   "attempt": 1,
-  "status": "running",
+  "status": "passed",
   "workflow": "https://github.com/burakpirgun/sumac-automation/actions/runs/37579549058",
   "updatedAt": "2026-10-07T06:04:46.151Z",
-  "handleId": "run_06gh9tn5n5uu33vu4okungbd01"
+  "handleId": "run_06gh9tn5n5uu33vu4okungbd01",
+  "resumedExistingRun": false,
+  "tests": {
+    "passed": 20,
+    "network": "none",
+    "credentials": "none",
+    "containerRoot": "read-only"
+  },
+  "audit": {
+    "verdict": "pass",
+    "findings": [
+      "All acceptance cases appear correctly handled by the implementation logic.",
+      "typeof boolean check correctly rejects true/false since typeof true === 'boolean', not 'number'.",
+      "typeof null check correctly rejects null since typeof null === 'object', not 'number'.",
+      "String rejection works correctly via typeof check.",
+      "Negative amount throws via amount < 0 check.",
+      "Zero or negative servings throw via <= 0 checks.",
+      "Non-finite result (1e308 * 10) throws via !isFinite(result) check.",
+      "Underflow case (5e-324 with ratio 0.5) throws via amount > 0 && result === 0 check.",
+      "Ratio overflow/underflow edge cases (1e-308/1e308 or 1e308/1e-308) correctly produce non-finite or zero ratio, triggering throws.",
+      "No imports, side effects, external resources, or forbidden capabilities present; function is pure and self-contained."
+    ]
+  },
+  "summary": "Implements scaleLinearAmount as a pure TypeScript function with strict validation. Checks that all three arguments are typeof 'number' (rejecting booleans, null, strings), all are finite, amount>=0, both servings>0. Computes ratio=targetServings/originalServings, throws if ratio is non-finite or zero. Computes result=amount*ratio, throws if result is non-finite or if a positive amount underflows to zero. Returns result with no rounding, preserving tiny quantities; zero amount returns zero when ratio is valid.",
+  "generationRunId": "run_06gh9tn5n5uu33vu4okungbd01",
+  "completedAt": "2026-10-07T06:05:13.904Z"
 }
