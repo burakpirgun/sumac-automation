@@ -1,0 +1,9 @@
+{
+  "jobId": "overnight-03-resume-compatible",
+  "digest": "67152cf61169",
+  "branch": "sumac/jobs/overnight-03-resume-compatible-67152cf61169",
+  "attempt": 1,
+  "status": "running",
+  "workflow": "https://github.com/burakpirgun/sumac-automation/actions/runs/37587799077",
+  "updatedAt": "2026-10-07T07:31:16.865Z"
+}
