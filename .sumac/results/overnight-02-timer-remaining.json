@@ -1,0 +1,36 @@
+{
+  "jobId": "overnight-02-timer-remaining",
+  "digest": "dc34efdb7b09",
+  "branch": "sumac/jobs/overnight-02-timer-remaining-dc34efdb7b09",
+  "attempt": 1,
+  "status": "passed",
+  "workflow": "https://github.com/burakpirgun/sumac-automation/actions/runs/37582153322",
+  "updatedAt": "2026-10-07T06:33:45.284Z",
+  "handleId": "run_06gha4beu1c8pmluebf1hjb201",
+  "resumedExistingRun": false,
+  "tests": {
+    "passed": 20,
+    "network": "none",
+    "credentials": "none",
+    "containerRoot": "read-only"
+  },
+  "audit": {
+    "verdict": "pass",
+    "findings": [
+      "All acceptance cases with valid inputs produce correct results via Math.max(0,Math.ceil((deadlineMs-nowMs)/1000))",
+      "Type guard correctly rejects non-number types (string, null, boolean) via typeof check",
+      "Negative value check correctly throws for deadlineMs<0 and nowMs<0",
+      "Infinity/NaN rejected by isFinite check",
+      "No imports, no time reads, no side effects, no external resources",
+      "Self-contained single TypeScript module with a single named export",
+      "Edge case deadlineMs===nowMs returns 0 correctly",
+      "Edge case nowMs>deadlineMs returns 0 via Math.max",
+      "Fractional ms case [1000.5,1000] returns Math.ceil(0.5/1000)=1 correctly",
+      "No forbidden capabilities used"
+    ]
+  },
+  "summary": "Implements remainingTimerSeconds(deadlineMs, nowMs) which validates that both inputs are finite nonnegative numbers (throwing on invalid input), then returns Math.max(0, Math.ceil((deadlineMs - nowMs) / 1000)) so that past/reached deadlines return zero and fractional positive seconds round up.",
+  "generationRunId": "run_06gha4beu1c8pmluebf1hjb201",
+  "completedAt": "2026-10-07T06:34:05.651Z",
+  "pullRequestUrl": "https://github.com/burakpirgun/sumac-automation/pull/7"
+}
