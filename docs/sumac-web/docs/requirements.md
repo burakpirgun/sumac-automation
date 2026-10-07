@@ -15,3 +15,5 @@ Validate on tasteofturkiye.org before bulk migration or new content. Public acce
 - Bulk migration and adding content wait until validation failures are resolved. The existing POC snapshot may be used for validation.
 
 Initial gaps: static snapshots, external detail links, no cooking mode, no live Sanity connection. These are not represented as completed requirements.
+
+- All displayed editorial content—including navigation labels, headings, quotes, descriptions, captions, translations, and alt text—must be stored in Sanity. Image originals must be Sanity assets with crop/hotspot metadata. No headings, city names, quotes, captions, promotional text, or watermarks may be baked into editorial pictures. Templates render editable text separately over or beside clean images. Audit images before publication; do not treat OCR alone as proof.
