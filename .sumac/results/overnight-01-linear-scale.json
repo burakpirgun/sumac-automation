@@ -31,5 +31,6 @@
   },
   "summary": "Implements scaleLinearAmount as a pure TypeScript function with strict validation. Checks that all three arguments are typeof 'number' (rejecting booleans, null, strings), all are finite, amount>=0, both servings>0. Computes ratio=targetServings/originalServings, throws if ratio is non-finite or zero. Computes result=amount*ratio, throws if result is non-finite or if a positive amount underflows to zero. Returns result with no rounding, preserving tiny quantities; zero amount returns zero when ratio is valid.",
   "generationRunId": "run_06gh9tn5n5uu33vu4okungbd01",
-  "completedAt": "2026-10-07T06:05:13.904Z"
+  "completedAt": "2026-10-07T06:05:13.904Z",
+  "pullRequestUrl": "https://github.com/burakpirgun/sumac-automation/pull/6"
 }
