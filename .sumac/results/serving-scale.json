@@ -2,9 +2,10 @@
   "jobId": "serving-scale",
   "digest": "19fe85198b6b",
   "branch": "sumac/jobs/serving-scale-19fe85198b6b",
-  "attempt": 1,
-  "status": "running",
+  "attempt": 2,
+  "status": "retry",
   "workflow": "https://github.com/burakpirgun/sumac-automation/actions/runs/37563946396",
-  "updatedAt": "2026-10-07T02:51:19.031Z",
-  "handleId": "run_06gh8he9sn758j9cf18sisha01"
+  "updatedAt": "2026-10-07T02:51:31.217Z",
+  "handleId": null,
+  "feedback": "Development task ended with FAILED"
 }
