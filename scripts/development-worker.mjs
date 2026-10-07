@@ -72,6 +72,14 @@ function sandboxTest(source, job, directory) {
   }
 }
 
+if (process.env.SUMAC_DIAGNOSTIC_RUN_ID) {
+  await initializeTrigger();
+  const diagnostic = await runs.retrieve(process.env.SUMAC_DIAGNOSTIC_RUN_ID);
+  const result = { runId: diagnostic.id, status: diagnostic.status, error: String(diagnostic.error?.message ?? '').replace(/(?:tr_(?:pat|prod|dev)_|sk-ant-)[A-Za-z0-9_-]+/g, '[redacted]') };
+  console.log(JSON.stringify(result));
+  await writeFile(`${reportDir}/diagnostic.json`, JSON.stringify(result) + '\n');
+}
+
 const files = (await readdir('.sumac/jobs')).filter(name => /^[a-z0-9-]+\.json$/.test(name)).sort();
 let selected = false;
 for (const file of files) {
@@ -101,7 +109,7 @@ for (const file of files) {
         await checkpoint(branch, job.id, state);
       }
       const run = await runs.poll(handleId, { pollIntervalMs: 3000 });
-      if (run.status !== 'COMPLETED') throw new Error(`Development task ended with ${run.status}`);
+      if (run.status !== 'COMPLETED') throw new Error(`Development task ended with ${run.status}: ${run.error?.message ?? 'no error details'}`);
       const source = validateProposal(run.output, job);
       const directory = resolve(reportDir, `${job.id}-${attempt}`);
       await mkdir(directory, { recursive: true });
