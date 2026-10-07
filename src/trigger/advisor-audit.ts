@@ -13,7 +13,7 @@ export const sumacAdvisorAudit = schemaTask({
   run: async ({ jobId, objective }) => {
     logger.info('Advisory job started', { jobId });
     const plan = await askClaude(`${boundaries} Produce {"summary":string,"steps":[{"action":string,"verification":string}],"risks":string[]}. Include 1-8 concrete steps and at most 8 risks.`, { objective }, planSchema);
-    const audit = await askClaude(`${boundaries} Audit feasibility, verification, and owner boundaries. Return {"verdict":"pass"|"revise"|"blocked","findings":string[]}. Pass only a plan that includes concrete verification and respects boundaries. Do not assume any step has been executed.`, { objective, plan }, auditSchema);
+    const audit = await askClaude(`${boundaries} Audit feasibility, verification, and owner boundaries. Return {"verdict":"pass"|"revise"|"blocked","findings":string[]}. Pass only a plan that includes concrete verification and respects boundaries. Use at most ten concise findings. Do not assume any step has been executed.`, { objective, plan }, auditSchema);
     const result = { jobId, status: audit.verdict === 'pass' ? 'advice_ready' : 'needs_revision', plan, audit,
       executionPerformed: false, completedAt: new Date().toISOString() };
     logger.info('Advisory job finished', { jobId, status: result.status, verdict: audit.verdict });

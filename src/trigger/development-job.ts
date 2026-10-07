@@ -13,7 +13,7 @@ export const sumacDevelopmentJob = schemaTask({
   run: async (job) => {
     logger.info('Development proposal started', { jobId: job.jobId });
     const proposal = await askClaude(`${boundaries} Return {"source":string,"summary":string}. Export the requested named function. Acceptance cases are mandatory. Use ordinary strict TypeScript.`, job, proposalSchema);
-    const audit = await askClaude(`${boundaries} Audit the proposed source against the objective and acceptance cases. Check correctness, edge cases, forbidden capabilities, and strict TypeScript compatibility. Return {"verdict":"pass"|"revise"|"blocked","findings":string[]}. This is source review, not evidence of executed tests.`, { ...job, proposal }, auditSchema);
+    const audit = await askClaude(`${boundaries} Audit the proposed source against the objective and acceptance cases. Check correctness, edge cases, forbidden capabilities, and strict TypeScript compatibility. Return {"verdict":"pass"|"revise"|"blocked","findings":string[]}. Use at most ten concise findings. This is source review, not evidence of executed tests.`, { ...job, proposal }, auditSchema);
     return { jobId: job.jobId, ...proposal, audit, executionPerformed: false };
   },
 });

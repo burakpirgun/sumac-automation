@@ -7,7 +7,7 @@ export const planSchema = z.object({
 }).strict();
 export const auditSchema = z.object({
   verdict: z.enum(['pass', 'revise', 'blocked']),
-  findings: z.array(z.string()).max(10),
+  findings: z.array(z.string()).max(30),
 }).strict();
 
 export async function askClaude<T>(system: string, input: unknown, schema: z.ZodType<T>): Promise<T> {
