@@ -260,3 +260,25 @@ The agent initiated GitHub Actions job rerun through the connector without user 
 - sumac-advisor-audit: run_06gh8e8re7jvql5o4fdjgb8901, COMPLETED, audit verdict pass, advice status advice_ready.
 
 This confirms direct test initiation with standing authorization and repeatable hosted execution. It does not establish autonomous code-writing, scheduled task pickup, or unattended development recovery.
+
+
+## Bounded unattended development worker built and verified — October 6, 2026 (America/Chicago)
+
+Implemented in PR #3. The current worker supports trusted queued manifests, one self-contained TypeScript utility per job, fixed acceptance cases, hosted Claude generation plus separate source audit, strict TypeScript checks, and credential-free/no-network Docker execution. Results remain on separate branches; generated work is not automatically merged. Existing websites were not modified.
+
+### Hosted evidence
+- Production version 20261007.9 deployed; smoke checks passed: https://github.com/burakpirgun/sumac-automation/actions/runs/37564265055
+- Serving-scale revision 2: https://github.com/burakpirgun/sumac-automation/actions/runs/37564444413
+- Generation/audit task: run_06gh8ir8t38ile7o318o7hq201, COMPLETED. Source audit passed; all 12 fixed cases executed successfully in Docker (no network or credentials, read-only root, resource/time limits).
+- Verified result: sumac/jobs/serving-scale-e1abb67fea66, .sumac/results/serving-scale.json.
+- Generated result PR: https://github.com/burakpirgun/sumac-automation/pull/4 (opened through the connected GitHub app after Actions could not create it; settings were not changed). PR remains unmerged.
+- Simulated interrupted-handoff recovery: https://github.com/burakpirgun/sumac-automation/actions/runs/37564701543/attempts/1. Running checkpoint retained the completed task ID; worker reused the existing result and reran 12 cases. resumedExistingRun=true; no new generation calls.
+- Duplicate/idle replay: https://github.com/burakpirgun/sumac-automation/actions/runs/37564701543/attempts/2. Completed successfully with “No queued jobs. No Claude calls made.”
+
+### Failures resolved and retained
+Earlier source generation returned invalid JSON and exhausted its two attempts, producing a persistent blocked checkpoint on revision 1. The adapter now uses Anthropic provider-enforced JSON schemas and validates original Zod constraints locally. A separate smoke failure exposed an overly restrictive ten-finding cap; a bounded thirty-finding cap and concise prompts resolved it. Regression tests cover retained findings, provider format, malformed/truncated replies, invalid jobs/proposals, stable revision identities, and recovery/terminal behavior. Failure history was preserved.
+
+### Operation and limits
+Hourly pickup is configured at minute 17 UTC, plus immediate pickup on queued-job changes, successful main deployment, and manual dispatch. The scheduled cron has been configured; a cron-triggered run has not yet been observed. GitHub schedule timing is best effort. One job per invocation; at most two generation attempts per revision; failed jobs become blocked; seven-day request idempotency and saved task IDs aid recovery. Idle jobs make no Claude calls. Current queue revision is complete, so the worker waits for another committed manifest.
+
+This is a working unattended utility-development pipeline, not unrestricted website development or arbitrary tool execution. General frontend/repository editing and external completion/failure notifications are not connected. Persistent GitHub branches, reports, artifacts, and run logs provide status. See DEVELOPMENT.md for supported job format and limits. Standing owner-controlled exclusions continue to apply.
