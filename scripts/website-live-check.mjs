@@ -11,7 +11,7 @@ try {
     const errors = [];
     page.on('pageerror', e => errors.push(e.message));
     for (const [hash,rail,card] of [['#recipes','#recipe-grid','.recipe-card'],['#places','#places-grid','.place-card'],['#pantry','#ingredients','.ingredient']]) {
-      const response = await page.goto(base+'/'+hash, { waitUntil:'networkidle' });
+      const response = await page.goto(base+'/?validation='+encodeURIComponent(hash)+hash, { waitUntil:'networkidle' });
       assert.equal(response.status(),200);
       assert.match(response.headers()['x-robots-tag'] ?? '', /noindex/);
       assert.match(await page.locator('meta[name=robots]').getAttribute('content'), /noindex/);
