@@ -1,0 +1,149 @@
+{
+  "id": "overnight-02-timer-remaining",
+  "exportName": "remainingTimerSeconds",
+  "objective": "Implement pure exported remainingTimerSeconds(deadlineMs:number,nowMs:number):number. Both must be finite nonnegative numbers; throw otherwise. Return Math.max(0,Math.ceil((deadlineMs-nowMs)/1000)). Inputs are caller-supplied absolute timestamps. No time reads, timers, imports, mutation, external resources or public labels. Reached/past deadlines return zero and positive fractional seconds round up.",
+  "cases": [
+    {
+      "args": [
+        10000,
+        0
+      ],
+      "expected": 10
+    },
+    {
+      "args": [
+        10000,
+        9000
+      ],
+      "expected": 1
+    },
+    {
+      "args": [
+        10000,
+        9001
+      ],
+      "expected": 1
+    },
+    {
+      "args": [
+        10000,
+        9999
+      ],
+      "expected": 1
+    },
+    {
+      "args": [
+        10000,
+        10000
+      ],
+      "expected": 0
+    },
+    {
+      "args": [
+        10000,
+        10001
+      ],
+      "expected": 0
+    },
+    {
+      "args": [
+        0,
+        0
+      ],
+      "expected": 0
+    },
+    {
+      "args": [
+        0,
+        5000
+      ],
+      "expected": 0
+    },
+    {
+      "args": [
+        2001,
+        0
+      ],
+      "expected": 3
+    },
+    {
+      "args": [
+        1000.5,
+        1000
+      ],
+      "expected": 1
+    },
+    {
+      "args": [
+        1720000060000,
+        1720000000000
+      ],
+      "expected": 60
+    },
+    {
+      "args": [
+        1720000060000,
+        1720000055001
+      ],
+      "expected": 5
+    },
+    {
+      "args": [
+        -1,
+        0
+      ],
+      "throws": true
+    },
+    {
+      "args": [
+        1000,
+        -1
+      ],
+      "throws": true
+    },
+    {
+      "args": [
+        "1000",
+        0
+      ],
+      "throws": true
+    },
+    {
+      "args": [
+        1000,
+        "0"
+      ],
+      "throws": true
+    },
+    {
+      "args": [
+        null,
+        0
+      ],
+      "throws": true
+    },
+    {
+      "args": [
+        1000,
+        null
+      ],
+      "throws": true
+    },
+    {
+      "args": [
+        true,
+        0
+      ],
+      "throws": true
+    },
+    {
+      "args": [
+        1000,
+        false
+      ],
+      "throws": true
+    }
+  ],
+  "maxAttempts": 3,
+  "revision": 1
+}

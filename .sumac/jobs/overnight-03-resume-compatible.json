@@ -1,0 +1,230 @@
+{
+  "id": "overnight-03-resume-compatible",
+  "exportName": "isResumeCompatible",
+  "objective": "Implement pure exported isResumeCompatible(storedSchema:unknown,currentSchema:unknown,storedRecipe:unknown,currentRecipe:unknown,storedRevision:unknown,currentRevision:unknown,storedLocale:unknown,currentLocale:unknown):boolean. Return false, never throw, unless both schemas are finite positive integer numbers and all other args are nonempty strings without leading/trailing whitespace. Return true only when each stored/current pair matches strictly, case-sensitively without normalization/coercion. Identity check only; saved state/freshness validity excluded. No imports/side effects/mutation/public strings.",
+  "cases": [
+    {
+      "args": [
+        1,
+        1,
+        "recipe-a",
+        "recipe-a",
+        "revision-2",
+        "revision-2",
+        "x-test",
+        "x-test"
+      ],
+      "expected": true
+    },
+    {
+      "args": [
+        2,
+        2,
+        "r",
+        "r",
+        "v3",
+        "v3",
+        "q-demo",
+        "q-demo"
+      ],
+      "expected": true
+    },
+    {
+      "args": [
+        2,
+        1,
+        "recipe-a",
+        "recipe-a",
+        "revision-2",
+        "revision-2",
+        "x-test",
+        "x-test"
+      ],
+      "expected": false
+    },
+    {
+      "args": [
+        1,
+        1,
+        "recipe-b",
+        "recipe-a",
+        "revision-2",
+        "revision-2",
+        "x-test",
+        "x-test"
+      ],
+      "expected": false
+    },
+    {
+      "args": [
+        1,
+        1,
+        "recipe-a",
+        "recipe-a",
+        "revision-1",
+        "revision-2",
+        "x-test",
+        "x-test"
+      ],
+      "expected": false
+    },
+    {
+      "args": [
+        1,
+        1,
+        "recipe-a",
+        "recipe-a",
+        "revision-2",
+        "revision-2",
+        "q-demo",
+        "x-test"
+      ],
+      "expected": false
+    },
+    {
+      "args": [
+        0,
+        1,
+        "recipe-a",
+        "recipe-a",
+        "revision-2",
+        "revision-2",
+        "x-test",
+        "x-test"
+      ],
+      "expected": false
+    },
+    {
+      "args": [
+        1,
+        1.5,
+        "recipe-a",
+        "recipe-a",
+        "revision-2",
+        "revision-2",
+        "x-test",
+        "x-test"
+      ],
+      "expected": false
+    },
+    {
+      "args": [
+        "1",
+        1,
+        "recipe-a",
+        "recipe-a",
+        "revision-2",
+        "revision-2",
+        "x-test",
+        "x-test"
+      ],
+      "expected": false
+    },
+    {
+      "args": [
+        null,
+        1,
+        "recipe-a",
+        "recipe-a",
+        "revision-2",
+        "revision-2",
+        "x-test",
+        "x-test"
+      ],
+      "expected": false
+    },
+    {
+      "args": [
+        1,
+        1,
+        "",
+        "recipe-a",
+        "revision-2",
+        "revision-2",
+        "x-test",
+        "x-test"
+      ],
+      "expected": false
+    },
+    {
+      "args": [
+        1,
+        1,
+        "recipe-a",
+        "recipe-a",
+        "",
+        "revision-2",
+        "x-test",
+        "x-test"
+      ],
+      "expected": false
+    },
+    {
+      "args": [
+        1,
+        1,
+        "recipe-a",
+        "recipe-a",
+        "revision-2",
+        "revision-2",
+        "",
+        "x-test"
+      ],
+      "expected": false
+    },
+    {
+      "args": [
+        1,
+        1,
+        null,
+        "recipe-a",
+        "revision-2",
+        "revision-2",
+        "x-test",
+        "x-test"
+      ],
+      "expected": false
+    },
+    {
+      "args": [
+        1,
+        1,
+        "recipe-a",
+        "recipe-a",
+        2,
+        "revision-2",
+        "x-test",
+        "x-test"
+      ],
+      "expected": false
+    },
+    {
+      "args": [
+        1,
+        1,
+        "recipe-a",
+        "recipe-a",
+        "revision-2",
+        "revision-2",
+        false,
+        "x-test"
+      ],
+      "expected": false
+    },
+    {
+      "args": [
+        1,
+        1,
+        " recipe-a",
+        "recipe-a",
+        "revision-2",
+        "revision-2",
+        "x-test",
+        "x-test"
+      ],
+      "expected": false
+    }
+  ],
+  "maxAttempts": 3,
+  "revision": 1
+}

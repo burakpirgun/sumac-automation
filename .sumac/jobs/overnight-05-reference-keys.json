@@ -1,0 +1,248 @@
+{
+  "id": "overnight-05-reference-keys",
+  "exportName": "uniqueReferenceKeys",
+  "objective": "Implement pure exported uniqueReferenceKeys(references:unknown):string[]. Require array of nonnull plain objects (Object.getPrototypeOf null or equals Object.getPrototypeOf({})), each with own string _ref; throw TypeError otherwise. Trim keys, skip empty, deduplicate case-sensitively in first-seen order. Ignore extra fields. No mutation/sorting/coercion/remote resolution/imports/hardcoded IDs. Always new array. Use Set safely for arbitrary string keys. Generated source/comments must avoid forbidden identifiers import,require,process,globalThis,eval,Function,fetch,WebSocket,constructor,__proto__,prototype; no literal keys are needed.",
+  "cases": [
+    {
+      "args": [
+        []
+      ],
+      "expected": []
+    },
+    {
+      "args": [
+        [
+          {
+            "_ref": "key-b"
+          },
+          {
+            "_ref": "key-a"
+          },
+          {
+            "_ref": "key-b"
+          }
+        ]
+      ],
+      "expected": [
+        "key-b",
+        "key-a"
+      ]
+    },
+    {
+      "args": [
+        [
+          {
+            "_ref": " key-a "
+          },
+          {
+            "_ref": "key-a"
+          },
+          {
+            "_ref": "key-b"
+          }
+        ]
+      ],
+      "expected": [
+        "key-a",
+        "key-b"
+      ]
+    },
+    {
+      "args": [
+        [
+          {
+            "_ref": ""
+          },
+          {
+            "_ref": " \t\n "
+          },
+          {
+            "_ref": "key-a"
+          }
+        ]
+      ],
+      "expected": [
+        "key-a"
+      ]
+    },
+    {
+      "args": [
+        [
+          {
+            "_ref": "Key-a"
+          },
+          {
+            "_ref": "key-a"
+          }
+        ]
+      ],
+      "expected": [
+        "Key-a",
+        "key-a"
+      ]
+    },
+    {
+      "args": [
+        [
+          {
+            "_ref": "constructor"
+          },
+          {
+            "_ref": "toString"
+          },
+          {
+            "_ref": "__proto__"
+          },
+          {
+            "_ref": "constructor"
+          }
+        ]
+      ],
+      "expected": [
+        "constructor",
+        "toString",
+        "__proto__"
+      ]
+    },
+    {
+      "args": [
+        [
+          {
+            "_ref": "key-a",
+            "_type": "reference",
+            "extra": 7
+          }
+        ]
+      ],
+      "expected": [
+        "key-a"
+      ]
+    },
+    {
+      "args": [
+        [
+          {
+            "_ref": "a b"
+          },
+          {
+            "_ref": "a  b"
+          }
+        ]
+      ],
+      "expected": [
+        "a b",
+        "a  b"
+      ]
+    },
+    {
+      "args": [
+        [
+          {
+            "_ref": " key-a "
+          },
+          {
+            "_ref": "key-a"
+          }
+        ]
+      ],
+      "expected": [
+        "key-a"
+      ]
+    },
+    {
+      "args": [
+        null
+      ],
+      "throws": true
+    },
+    {
+      "args": [
+        {}
+      ],
+      "throws": true
+    },
+    {
+      "args": [
+        "key-a"
+      ],
+      "throws": true
+    },
+    {
+      "args": [
+        [
+          null
+        ]
+      ],
+      "throws": true
+    },
+    {
+      "args": [
+        [
+          []
+        ]
+      ],
+      "throws": true
+    },
+    {
+      "args": [
+        [
+          "key-a"
+        ]
+      ],
+      "throws": true
+    },
+    {
+      "args": [
+        [
+          {}
+        ]
+      ],
+      "throws": true
+    },
+    {
+      "args": [
+        [
+          {
+            "_ref": null
+          }
+        ]
+      ],
+      "throws": true
+    },
+    {
+      "args": [
+        [
+          {
+            "_ref": 3
+          }
+        ]
+      ],
+      "throws": true
+    },
+    {
+      "args": [
+        [
+          {
+            "_ref": false
+          }
+        ]
+      ],
+      "throws": true
+    },
+    {
+      "args": [
+        [
+          {
+            "_ref": "valid"
+          },
+          {
+            "_ref": []
+          }
+        ]
+      ],
+      "throws": true
+    }
+  ],
+  "maxAttempts": 3,
+  "revision": 1
+}

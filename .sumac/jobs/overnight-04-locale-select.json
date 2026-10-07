@@ -1,0 +1,174 @@
+{
+  "id": "overnight-04-locale-select",
+  "exportName": "selectLocaleValue",
+  "objective": "Implement pure exported selectLocaleValue(localeMap:unknown,locale:unknown):string|null. Require nonnull plain object (its Object.getPrototypeOf is null or equals Object.getPrototypeOf({})), not array, and nonempty locale string without surrounding whitespace; throw TypeError otherwise. Validate every own enumerable map value is string or null, even when requested key missing. Return exact requested own property string/null; absent returns null. Preserve empty/whitespace values. No normalization, locale list, inherited-property reads, editorial fallback, mutation/imports. Safely handle arbitrary keys. Generated source including comments must avoid forbidden identifiers import,require,process,globalThis,eval,Function,fetch,WebSocket,constructor,__proto__,prototype; no literal keys are needed.",
+  "cases": [
+    {
+      "args": [
+        {
+          "x-test": "alpha",
+          "q-demo": "beta"
+        },
+        "q-demo"
+      ],
+      "expected": "beta"
+    },
+    {
+      "args": [
+        {
+          "x-test": "alpha"
+        },
+        "missing"
+      ],
+      "expected": null
+    },
+    {
+      "args": [
+        {},
+        "constructor"
+      ],
+      "expected": null
+    },
+    {
+      "args": [
+        {
+          "constructor": "own"
+        },
+        "constructor"
+      ],
+      "expected": "own"
+    },
+    {
+      "args": [
+        {
+          "toString": "own"
+        },
+        "toString"
+      ],
+      "expected": "own"
+    },
+    {
+      "args": [
+        {
+          "x-test": null
+        },
+        "x-test"
+      ],
+      "expected": null
+    },
+    {
+      "args": [
+        {
+          "x-test": ""
+        },
+        "x-test"
+      ],
+      "expected": ""
+    },
+    {
+      "args": [
+        {
+          "x-test": "  value  "
+        },
+        "x-test"
+      ],
+      "expected": "  value  "
+    },
+    {
+      "args": [
+        {
+          "x-Test": "alpha"
+        },
+        "x-test"
+      ],
+      "expected": null
+    },
+    {
+      "args": [
+        null,
+        "x-test"
+      ],
+      "throws": true
+    },
+    {
+      "args": [
+        [],
+        "x-test"
+      ],
+      "throws": true
+    },
+    {
+      "args": [
+        "invalid",
+        "x-test"
+      ],
+      "throws": true
+    },
+    {
+      "args": [
+        {
+          "x-test": 7
+        },
+        "x-test"
+      ],
+      "throws": true
+    },
+    {
+      "args": [
+        {
+          "q-demo": false
+        },
+        "missing"
+      ],
+      "throws": true
+    },
+    {
+      "args": [
+        {
+          "x-test": {
+            "value": "nested"
+          }
+        },
+        "x-test"
+      ],
+      "throws": true
+    },
+    {
+      "args": [
+        {},
+        ""
+      ],
+      "throws": true
+    },
+    {
+      "args": [
+        {},
+        " x-test"
+      ],
+      "throws": true
+    },
+    {
+      "args": [
+        {},
+        "x-test "
+      ],
+      "throws": true
+    },
+    {
+      "args": [
+        {},
+        4
+      ],
+      "throws": true
+    },
+    {
+      "args": [
+        {},
+        null
+      ],
+      "throws": true
+    }
+  ],
+  "maxAttempts": 3,
+  "revision": 1
+}
