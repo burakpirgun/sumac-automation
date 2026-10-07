@@ -32,6 +32,11 @@ jobs:
       - run: npm ci
       - run: npm run check
       - run: node --test scripts/development-core.test.mjs scripts/advisory.test.mjs
+      - name: Verify Actions pull request permission
+        if: github.event_name == 'push' && contains(github.event.head_commit.message, '[test-pr-permissions]')
+        run: node scripts/test-pr-permissions.mjs
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
       - name: Pick up and execute one queued job
         run: node scripts/development-worker.mjs
         env:
