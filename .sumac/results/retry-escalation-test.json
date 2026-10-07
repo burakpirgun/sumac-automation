@@ -1,0 +1,9 @@
+{
+  "jobId": "retry-escalation-test",
+  "digest": "e37bb1728f13",
+  "branch": "sumac/jobs/retry-escalation-test-e37bb1728f13",
+  "attempt": 1,
+  "status": "running",
+  "workflow": "https://github.com/burakpirgun/sumac-automation/actions/runs/37565483452",
+  "updatedAt": "2026-10-07T03:10:21.957Z"
+}
