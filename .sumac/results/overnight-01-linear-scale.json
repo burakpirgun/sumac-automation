@@ -1,0 +1,9 @@
+{
+  "jobId": "overnight-01-linear-scale",
+  "digest": "73a4fc797f82",
+  "branch": "sumac/jobs/overnight-01-linear-scale-73a4fc797f82",
+  "attempt": 1,
+  "status": "running",
+  "workflow": "https://github.com/burakpirgun/sumac-automation/actions/runs/37579549058",
+  "updatedAt": "2026-10-07T06:04:46.151Z"
+}
