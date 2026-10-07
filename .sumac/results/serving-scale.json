@@ -1,0 +1,9 @@
+{
+  "jobId": "serving-scale",
+  "digest": "e1abb67fea66",
+  "branch": "sumac/jobs/serving-scale-e1abb67fea66",
+  "attempt": 1,
+  "status": "running",
+  "workflow": "https://github.com/burakpirgun/sumac-automation/actions/runs/37564444413",
+  "updatedAt": "2026-10-07T02:57:27.730Z"
+}
