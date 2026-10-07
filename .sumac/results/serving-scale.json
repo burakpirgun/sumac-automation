@@ -1,0 +1,38 @@
+{
+  "jobId": "serving-scale",
+  "digest": "e1abb67fea66",
+  "branch": "sumac/jobs/serving-scale-e1abb67fea66",
+  "attempt": 1,
+  "status": "passed",
+  "workflow": "https://github.com/burakpirgun/sumac-automation/actions/runs/37564701543",
+  "updatedAt": "2026-10-07T03:00:46.099Z",
+  "handleId": "run_06gh8ir8t38ile7o318o7hq201",
+  "tests": {
+    "passed": 12,
+    "network": "none",
+    "credentials": "none",
+    "containerRoot": "read-only"
+  },
+  "audit": {
+    "verdict": "pass",
+    "findings": [
+      "All acceptance cases are handled correctly: valid inputs produce the expected rounded results and invalid inputs throw errors.",
+      "Type checking via typeof correctly rejects non-number inputs like strings and null.",
+      "isFinite checks correctly reject Infinity and NaN for all three parameters.",
+      "amount < 0 check correctly rejects -1 while allowing 0.",
+      "originalServings <= 0 and targetServings <= 0 checks correctly reject 0 and negative values.",
+      "1e+308 * 10 = 1e+309 which is Infinity, so the post-multiplication isFinite check correctly throws for that case.",
+      "Rounding via Math.round(scaled * 1000) / 1000 correctly yields 0.333 for (1/3) and 3.75 for (1.25*6/2).",
+      "No imports, external resources, mutations, or side effects are present.",
+      "The function is a pure self-contained TypeScript export with no forbidden capabilities.",
+      "The secondary isFinite check on result after rounding is redundant but harmless; if scaled is finite, result will also be finite."
+    ]
+  },
+  "summary": "Implements scaleIngredientAmount which validates all three inputs are finite numbers, enforces nonnegativity on amount and strict positivity on both servings values, computes the scaled result via multiplication by the ratio targetServings/originalServings, rounds to three decimal places using Math.round, and throws if the result is not finite.",
+  "generationRunId": "run_06gh8ir8t38ile7o318o7hq201",
+  "completedAt": "2026-10-07T03:00:55.185Z",
+  "pullRequestStatus": "unavailable; verified branch retained",
+  "recoveryTest": "Simulate an interrupted handoff after completed generation; resume the existing task without new model calls",
+  "pullRequestUrl": "https://github.com/burakpirgun/sumac-automation/pull/4",
+  "resumedExistingRun": true
+}
