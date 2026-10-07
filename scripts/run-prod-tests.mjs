@@ -23,7 +23,7 @@ for (const taskId of taskIds) {
   const payload = taskId === "sumac-advisor-audit" ? { jobId: "production-advisory-smoke-test", objective: "Plan a safe read-only check that confirms a recipe has a title, image, ingredient quantities, and cooking instructions before publishing. Do not modify any website or content." } : {};
   const handle = await tasks.trigger(taskId, payload);
   const run = await runs.poll(handle.id, { pollIntervalMs: 3000 });
-  console.log(JSON.stringify({ taskId, runId: run.id, status: run.status, version: run.version, output: run.output }));
+  console.log(JSON.stringify({ taskId, runId: run.id, status: run.status, version: run.version, output: run.output, error: run.error ? { message: String(run.error.message ?? "task failed").replace(/(?:tr_(?:pat|prod|dev)_|sk-ant-)[A-Za-z0-9_-]+/g, "[redacted]") } : undefined }));
   if (run.status !== "COMPLETED") failed = true;
   if (taskId === "sumac-advisor-audit" && run.status === "COMPLETED" && (!run.output?.plan || !run.output?.audit || run.output?.executionPerformed !== false)) failed = true;
 }

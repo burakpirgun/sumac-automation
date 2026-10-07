@@ -16,13 +16,18 @@ export async function askClaude<T>(system: string, input: unknown, schema: z.Zod
   const response = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
     headers: { 'content-type': 'application/json', 'x-api-key': key, 'anthropic-version': '2023-06-01' },
-    body: JSON.stringify({ model: 'claude-sonnet-4-6', max_tokens: 1600, system,
+    body: JSON.stringify({ model: 'claude-sonnet-4-6', max_tokens: 4096, system,
       messages: [{ role: 'user', content: JSON.stringify(input) }] }),
     signal: AbortSignal.timeout(60_000),
   });
   if (!response.ok) throw new Error(`Claude advisory request failed: HTTP ${response.status}`);
-  const body = await response.json() as { content: Array<{ type: string; text?: string }> };
+  const body = await response.json() as { stop_reason?: string; content: Array<{ type: string; text?: string }> };
   const text = body.content.filter(item => item.type === 'text').map(item => item.text ?? '').join('').trim();
-  try { return schema.parse(JSON.parse(text)); }
-  catch { throw new Error('Claude advisory response failed JSON/schema validation'); }
+  if (body.stop_reason === 'max_tokens') throw new Error('Claude JSON response was truncated at the output token limit');
+  let parsed: unknown;
+  try { parsed = JSON.parse(text); }
+  catch { throw new Error('Claude advisory response is not valid JSON'); }
+  const validated = schema.safeParse(parsed);
+  if (!validated.success) throw new Error(`Claude advisory schema validation failed at: ${validated.error.issues.map(issue => issue.path.join('.')).join(', ')}`);
+  return validated.data;
 }
