@@ -213,8 +213,6 @@ This shows the 401 matches header replacement, but the proxy's behavior on these
 **Recommended path: GitHub Actions.** Added `.github/workflows/deploy-trigger.yml` (manual `workflow_dispatch`) and `scripts/run-prod-tests.mjs`. The workflow runs `npm ci`, `npm run check`, and `trigger.dev@4.7.3 deploy --env prod`. It then triggers both tasks with `{}` in Production and polls until they finish. The test script retrieves the Production key with the PAT exactly as the CLI does, keeps it in memory, and prints only task ID, run ID, status, version, and output. The only secret needed is `TRIGGER_ACCESS_TOKEN`.
 
 Owner action: create a Trigger.dev personal access token (Account → Personal Access Tokens). Add it as the repository secret `TRIGGER_ACCESS_TOKEN` (GitHub repo → Settings → Secrets and variables → Actions). Then run the "Deploy Trigger.dev (Production)" workflow.
-<<<<<<< HEAD
-=======
 
 
 ## Production verified — October 6, 2026 (America/Chicago)
@@ -227,19 +225,5 @@ GitHub Actions run https://github.com/burakpirgun/sumac-automation/actions/runs/
 - sumac-claude-access-check: run_06gh8alo8ebbcqpr96e9h0bf01, COMPLETED, model claude-sonnet-4-6, reply SUMAC_ADVISOR_READY.
 
 The hosted deployment blocker is resolved through GitHub Actions. Earlier failed proxy-environment attempts are historical. These verified tasks establish hosted execution and Claude connectivity; an unattended development agent, schedules, task queue, recovery, and notifications have not yet been implemented. No secrets were included in this record.
->>>>>>> origin/main
 
-## Production deployment verified — 2026-10-07 UTC
-
-The owner added the `TRIGGER_ACCESS_TOKEN` repository secret, merged the workflow to `main` (PR #1), and ran "Deploy Trigger.dev (Production)" manually: [Actions run 37561476935](https://github.com/burakpirgun/sumac-automation/actions/runs/37561476935), commit `8b46a49`, conclusion **success**. Every step passed: `npm ci`, `npm run check`, Deploy, Run Production tests.
-
-| Item | Result |
-| --- | --- |
-| Deployment version | **20261007.3** (short code `zzeel7yx`), "Deployment completed successfully" |
-| `sumac-health-check` | `run_06gh8aiu65alm9fi37q9s8hi01`, COMPLETED, version 20261007.3. Output: `ok: true`, project `sumac-automation`, message `Sumac background task is running` |
-| `sumac-claude-access-check` | `run_06gh8alo8ebbcqpr96e9h0bf01`, COMPLETED, version 20261007.3. Output: `ok: true`, model `claude-sonnet-4-6`, reply `SUMAC_ADVISOR_READY`, 30 input / 12 output tokens |
-| Independent cross-check | The Trigger.dev runs API (Production filter) lists exactly these two runs as COMPLETED on 20261007.3 |
-
-This verifies hosted Production deployment and execution of both connection tests, including Anthropic access from Production. It does not verify an autonomous coding agent, task queue, or overnight operation. Those are not implemented yet. The Claude Code cloud 401 deploy failure remains undiagnosed; GitHub Actions is the working deploy path.
-
-Next: implement the advisor/auditor and the persistent GitHub task queue as hosted tasks. Then prove two consecutive tasks and recovery from an interrupted run, per the earlier next steps.
+Independent cross-check (2026-10-07 UTC, Claude Code cloud): the Trigger.dev runs API, filtered to Production, lists exactly these two runs as COMPLETED on version 20261007.3 (finished 02:21:43Z and 02:21:48Z).
