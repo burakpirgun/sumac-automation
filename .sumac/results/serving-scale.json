@@ -30,5 +30,6 @@
   },
   "summary": "Implements scaleIngredientAmount which validates all three inputs are finite numbers, enforces nonnegativity on amount and strict positivity on both servings values, computes the scaled result via multiplication by the ratio targetServings/originalServings, rounds to three decimal places using Math.round, and throws if the result is not finite.",
   "generationRunId": "run_06gh8ir8t38ile7o318o7hq201",
-  "completedAt": "2026-10-07T02:57:51.887Z"
+  "completedAt": "2026-10-07T02:57:51.887Z",
+  "pullRequestStatus": "unavailable; verified branch retained"
 }
