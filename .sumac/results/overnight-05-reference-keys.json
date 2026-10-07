@@ -3,9 +3,9 @@
   "digest": "69cc81c23cb8",
   "branch": "sumac/jobs/overnight-05-reference-keys-69cc81c23cb8",
   "attempt": 3,
-  "status": "retry",
+  "status": "running",
   "workflow": "https://github.com/burakpirgun/sumac-automation/actions/runs/37601052561",
-  "updatedAt": "2026-10-07T09:31:24.669Z",
+  "updatedAt": "2026-10-07T09:31:26.177Z",
   "handleId": null,
   "feedback": "Generated code uses a forbidden capability",
   "failures": [
