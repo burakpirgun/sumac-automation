@@ -100,6 +100,8 @@ for (const file of files) {
     await checkpoint(branch, job.id, state);
     try {
       let handleId = state.handleId;
+      const resumedExistingRun = Boolean(handleId);
+      if (resumedExistingRun) console.log(JSON.stringify({ jobId: job.id, phase: "resume", runId: handleId }));
       if (!handleId) {
         const handle = await tasks.trigger('sumac-development-job', { jobId: job.id, objective: job.objective,
           exportName: job.exportName, acceptance: job.cases, ...(state.feedback ? { feedback: state.feedback } : {}) },
@@ -124,7 +126,7 @@ for (const file of files) {
       await writeFile(`${directory}/acceptance.cjs`, harness);
       const tests = sandboxTest(source, job, directory);
       await saveSource(branch, `src/generated/${job.id}.ts`, source);
-      state = { ...state, status: 'passed', tests, audit: run.output.audit, summary: run.output.summary, generationRunId: handleId, completedAt: new Date().toISOString() };
+      state = { ...state, status: 'passed', resumedExistingRun, tests, audit: run.output.audit, summary: run.output.summary, generationRunId: handleId, completedAt: new Date().toISOString() };
       await checkpoint(branch, job.id, state);
       // Some repositories disable Actions-created PRs. Preserve the branch/report even then.
       const existing = await github(`pulls?head=${encodeURIComponent(repository.split('/')[0] + ':' + branch)}&state=all`);
