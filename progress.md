@@ -213,3 +213,15 @@ This shows the 401 matches header replacement, but the proxy's behavior on these
 **Recommended path: GitHub Actions.** Added `.github/workflows/deploy-trigger.yml` (manual `workflow_dispatch`) and `scripts/run-prod-tests.mjs`. The workflow runs `npm ci`, `npm run check`, and `trigger.dev@4.7.3 deploy --env prod`. It then triggers both tasks with `{}` in Production and polls until they finish. The test script retrieves the Production key with the PAT exactly as the CLI does, keeps it in memory, and prints only task ID, run ID, status, version, and output. The only secret needed is `TRIGGER_ACCESS_TOKEN`.
 
 Owner action: create a Trigger.dev personal access token (Account → Personal Access Tokens). Add it as the repository secret `TRIGGER_ACCESS_TOKEN` (GitHub repo → Settings → Secrets and variables → Actions). Then run the "Deploy Trigger.dev (Production)" workflow.
+
+
+## Production verified — October 6, 2026 (America/Chicago)
+
+GitHub Actions run https://github.com/burakpirgun/sumac-automation/actions/runs/37561476935 completed successfully. Dependency installation, TypeScript check, artifact upload, hosted deployment, and both sequential Production tests passed.
+
+- Deployment version: 20261007.3
+- Deployment: https://cloud.trigger.dev/projects/v3/proj_vjirfqjbxrwdblvnjyjm/deployments/zzeel7yx
+- sumac-health-check: run_06gh8aiu65alm9fi37q9s8hi01, COMPLETED, output ok=true.
+- sumac-claude-access-check: run_06gh8alo8ebbcqpr96e9h0bf01, COMPLETED, model claude-sonnet-4-6, reply SUMAC_ADVISOR_READY.
+
+The hosted deployment blocker is resolved through GitHub Actions. Earlier failed proxy-environment attempts are historical. These verified tasks establish hosted execution and Claude connectivity; an unattended development agent, schedules, task queue, recovery, and notifications have not yet been implemented. No secrets were included in this record.
