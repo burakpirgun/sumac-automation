@@ -1,10 +1,19 @@
 name: Deploy Trigger.dev (Production)
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - 'src/**'
+      - 'scripts/run-prod-tests.mjs'
+      - 'trigger.config.ts'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/deploy-trigger.yml'
   workflow_dispatch:
     inputs:
       run_tests:
-        description: "Run both tasks in Production after deploying"
+        description: "Run Production task checks after deploying"
         type: boolean
         default: true
 
@@ -32,5 +41,5 @@ jobs:
       - name: Deploy
         run: npx --yes trigger.dev@4.7.3 deploy --env prod --skip-update-check
       - name: Run Production tests
-        if: ${{ inputs.run_tests }}
+        if: ${{ github.event_name == 'push' || inputs.run_tests }}
         run: node scripts/run-prod-tests.mjs
