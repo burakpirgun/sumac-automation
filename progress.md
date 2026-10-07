@@ -290,3 +290,10 @@ User requested an initial attempt plus two repair attempts. Active development j
 
 ## Actions token permission verified — 2026-10-07
 After the owner saved the repository setting, workflow run 37565246918 successfully created draft PR #5 with its own GITHUB_TOKEN, then closed the diagnostic PR. The diagnostic branch was retained. Type checks and worker tests passed. The worker found no queued jobs and made no Claude calls. This verifies Actions-created pull requests without a replacement token or website changes.
+
+## Live retry/escalation verification — 2026-10-07
+Controlled job `retry-escalation-test` intentionally required three contradictory outputs for identical input. Workflow [37565483452](https://github.com/burakpirgun/sumac-automation/actions/runs/37565483452) recorded exactly three failures: the initial attempt plus two repairs, followed automatically by advisor diagnosis and a separate auditor review. Diagnosis run `run_06gh8m0ufjgb4o041r7mdufq01` completed, correctly identified a specification contradiction, and was retained in the job report. The job stopped as blocked; the initial Actions failure was expected for this negative test, not an infrastructure failure.
+
+A simulated interrupted diagnosis handoff retained that run ID and cleared only the completion record on the test branch. Rerun job 112612759428 restored the diagnosis using the same run ID and kept exactly three failures. This verifies checkpoint recovery, not a literal process crash. Final duplicate rerun job 112612939182 succeeded and logged “No queued jobs. No Claude calls made.” The test remains terminal and will be skipped by scheduled workers.
+
+Report branch: `sumac/jobs/retry-escalation-test-e37bb1728f13`, report: `.sumac/results/retry-escalation-test.json`. No generated source was published, no website changed, and no new account was required. Advisor and auditor are separate calls to the same connected Claude provider.
