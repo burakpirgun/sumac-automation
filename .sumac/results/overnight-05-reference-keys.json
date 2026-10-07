@@ -3,11 +3,11 @@
   "digest": "69cc81c23cb8",
   "branch": "sumac/jobs/overnight-05-reference-keys-69cc81c23cb8",
   "attempt": 3,
-  "status": "running",
+  "status": "diagnosing",
   "workflow": "https://github.com/burakpirgun/sumac-automation/actions/runs/37601052561",
-  "updatedAt": "2026-10-07T09:31:26.177Z",
-  "handleId": "run_06ghbd0ru1uc3328bjeuag8e01",
-  "feedback": "Generated code uses a forbidden capability",
+  "updatedAt": "2026-10-07T09:31:44.323Z",
+  "handleId": null,
+  "feedback": "Source audit did not pass: The source uses `Object.prototype.hasOwnProperty` which contains the forbidden identifier `prototype` in the literal source text. The objective explicitly forbids the identifier `prototype` from appearing in generated source/comments.; The access `record[\"_ref\"]` uses a bracket-notation string key which is fine, but the hasOwnProperty call via `Object.prototype.hasOwnProperty.call` must be rewritten to avoid `prototype`. Use `Object.hasOwn(item, \"_ref\")` instead (ES2022) or restructure to avoid `prototype` entirely.; No other correctness issues found: array check, null check, typeof object check, proto check, string type check for _ref, trim, skip empty, Set-based deduplication, first-seen order, and always-new-array are all correctly implemented.; The forbidden identifier list includes `prototype`; even appearing as a property access chain segment (`Object.prototype.hasOwnProperty`) violates the rule as stated.",
   "failures": [
     {
       "attempt": 1,
@@ -16,6 +16,10 @@
     {
       "attempt": 2,
       "feedback": "Generated code uses a forbidden capability"
+    },
+    {
+      "attempt": 3,
+      "feedback": "Source audit did not pass: The source uses `Object.prototype.hasOwnProperty` which contains the forbidden identifier `prototype` in the literal source text. The objective explicitly forbids the identifier `prototype` from appearing in generated source/comments.; The access `record[\"_ref\"]` uses a bracket-notation string key which is fine, but the hasOwnProperty call via `Object.prototype.hasOwnProperty.call` must be rewritten to avoid `prototype`. Use `Object.hasOwn(item, \"_ref\")` instead (ES2022) or restructure to avoid `prototype` entirely.; No other correctness issues found: array check, null check, typeof object check, proto check, string type check for _ref, trim, skip empty, Set-based deduplication, first-seen order, and always-new-array are all correctly implemented.; The forbidden identifier list includes `prototype`; even appearing as a property access chain segment (`Object.prototype.hasOwnProperty`) violates the rule as stated."
     }
   ]
 }
