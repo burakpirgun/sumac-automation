@@ -249,3 +249,14 @@ Authorized: code changes; dependency installation; branches and pull requests; r
 Owner-controlled exclusions: new accounts, purchases, credit top-ups, subscription changes, increased spending limits, account profiles, security and ownership changes, destructive or irreversible actions, major DNS changes, enabling website indexing. Existing websites and unrelated projects must not be modified.
 
 Keep credentials private, preserve recoverability, distinguish verified results from assumptions, and record progress. Investigate supported alternatives for platform blockers; do not bypass safeguards. This authorization does not itself implement an unattended worker or guarantee this chat continues running after the session ends. Notification channels have not yet been designated/configured.
+
+
+## Directly initiated hosted retest — October 6, 2026 (America/Chicago)
+
+The agent initiated GitHub Actions job rerun through the connector without user UI action. Workflow run 37562121665 attempt 2 / job 112603605328 passed installation, TypeScript, deployment, and all three Production tasks. Version 20261007.5.
+
+- sumac-health-check: run_06gh8e7ko4spd7bng93sht9f01, COMPLETED.
+- sumac-claude-access-check: run_06gh8e8e7k47aeveudqhltog01, COMPLETED.
+- sumac-advisor-audit: run_06gh8e8re7jvql5o4fdjgb8901, COMPLETED, audit verdict pass, advice status advice_ready.
+
+This confirms direct test initiation with standing authorization and repeatable hosted execution. It does not establish autonomous code-writing, scheduled task pickup, or unattended development recovery.
