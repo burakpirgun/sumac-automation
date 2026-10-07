@@ -225,3 +225,16 @@ GitHub Actions run https://github.com/burakpirgun/sumac-automation/actions/runs/
 - sumac-claude-access-check: run_06gh8alo8ebbcqpr96e9h0bf01, COMPLETED, model claude-sonnet-4-6, reply SUMAC_ADVISOR_READY.
 
 The hosted deployment blocker is resolved through GitHub Actions. Earlier failed proxy-environment attempts are historical. These verified tasks establish hosted execution and Claude connectivity; an unattended development agent, schedules, task queue, recovery, and notifications have not yet been implemented. No secrets were included in this record.
+
+
+## Automatic deployment and advisor/audit verified — October 6, 2026 (America/Chicago)
+
+Standing owner authorization explicitly permits implementation, merges, deployments, tests, troubleshooting, rollback of agent changes, ongoing automatic deployments/tests on relevant main-branch code changes, existing Claude API-credit usage, and unattended execution across sessions. Owner retains new spending commitments, credit purchases, billing limits, subscriptions, account creation, profile/security/ownership changes, destructive actions, major DNS changes, and website indexing. Existing websites and unrelated projects remain untouched.
+
+Automatic push workflow run https://github.com/burakpirgun/sumac-automation/actions/runs/37562121665 succeeded. Deployment version 20261007.4; install and TypeScript checks passed.
+
+- sumac-health-check: run_06gh8ccql8vedllu5esi69p801, COMPLETED.
+- sumac-claude-access-check: run_06gh8cdk3gafc12e2ea41qqk01, COMPLETED, SUMAC_ADVISOR_READY.
+- sumac-advisor-audit: run_06gh8ce0jscub7d4boecrgiu01, COMPLETED, status advice_ready, audit verdict pass, executionPerformed=false.
+
+The advisory task generated and audited a hypothetical recipe pre-publication check. It did not actually inspect or modify a recipe. This verifies the bounded advisor/audit pipeline, not autonomous code execution or overnight task pickup. Workflow path filters exclude progress/documentation-only changes. Existing manual dispatch remains available.
