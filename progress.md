@@ -183,3 +183,33 @@ After the PAT-authenticated environment lookup, the CLI switches to the Producti
 3. Explicitly approve a header-behavior probe in this session. Only status codes would be printed.
 
 No secrets were printed or stored. Nothing changed in Trigger.dev.
+
+## CLI source inspection and proxy-scoping assessment — 2026-10-07 UTC
+
+Read from the installed `trigger.dev@4.7.3` CLI source (`dist/esm/apiClient.js`, `utilities/session.js`, `commands/deploy.js`, `deploy/buildPath.js`). No requests were sent and no credentials were read.
+
+**Personal access token (`TRIGGER_ACCESS_TOKEN`, `tr_pat_`) calls during deploy:**
+- `GET /api/v2/whoami`
+- `GET /api/v1/projects/{ref}/prod`: returns the Production `apiKey` and `apiUrl`. `getProjectClient` then creates a second `CliApiClient` with that key (`session.js:60`).
+- The PAT is also passed to the image build step as `authAccessToken` (`deploy/buildImage.js`).
+
+**Production environment key calls (`Authorization: Bearer <apiKey>`):**
+- `GET /api/v1/projects/{ref}/prod/deploy-settings`: failure is non-fatal; the CLI falls back to the Depot path (`buildPath.js`).
+- `GET /api/v1/projects/{ref}/envvars`
+- `GET /api/v1/remote-build-provider-status`
+- `POST /api/v1/artifacts`
+- `POST /api/v1/deployments`: the call that produced `Failed to start deployment: Invalid API key`.
+- `GET /api/v1/deployments/{id}`, `POST /api/v1/deployments/{id}/generate-registry-credentials`, `/background-workers`, `/start-indexing`, `/fail`
+- `POST /api/v3/deployments/{id}/finalize`
+- Triggering tasks: `POST /api/v1/tasks/{id}/trigger`. The CLI has no trigger command; `runs list/get/replay/cancel` also use the environment key.
+
+**Can path-scoped injection fix it? No.**
+1. The public cloud-environments documentation (API credentials section) matches credentials by **host only**: "The agent proxy attaches a credential to a request when the request's host matches one you listed." It documents no path-prefix, method, or pass-through-if-present setting.
+2. Even with prefix scoping, it would not separate the calls: `/api/v1/projects/{ref}/prod/deploy-settings` and `/api/v1/projects/{ref}/envvars` share prefixes with the PAT path `/api/v1/projects/{ref}/prod`. Both token types use the same host.
+3. The session's credential listing describes path/method restrictions as causing 403 on other paths. That blocks environment-key calls instead of passing them through.
+
+This shows the 401 matches header replacement, but the proxy's behavior on these specific requests was not directly observed. **Cause remains unconfirmed.**
+
+**Recommended path: GitHub Actions.** Added `.github/workflows/deploy-trigger.yml` (manual `workflow_dispatch`) and `scripts/run-prod-tests.mjs`. The workflow runs `npm ci`, `npm run check`, and `trigger.dev@4.7.3 deploy --env prod`. It then triggers both tasks with `{}` in Production and polls until they finish. The test script retrieves the Production key with the PAT exactly as the CLI does, keeps it in memory, and prints only task ID, run ID, status, version, and output. The only secret needed is `TRIGGER_ACCESS_TOKEN`.
+
+Owner action: create a Trigger.dev personal access token (Account → Personal Access Tokens). Add it as the repository secret `TRIGGER_ACCESS_TOKEN` (GitHub repo → Settings → Secrets and variables → Actions). Then run the "Deploy Trigger.dev (Production)" workflow.
