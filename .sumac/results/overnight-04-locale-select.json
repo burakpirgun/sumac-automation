@@ -3,9 +3,9 @@
   "digest": "7bee320d66f1",
   "branch": "sumac/jobs/overnight-04-locale-select-7bee320d66f1",
   "attempt": 3,
-  "status": "retry",
+  "status": "running",
   "workflow": "https://github.com/burakpirgun/sumac-automation/actions/runs/37594376460",
-  "updatedAt": "2026-10-07T08:32:15.149Z",
+  "updatedAt": "2026-10-07T08:32:16.210Z",
   "feedback": "The \"string\" argument must be of type string or an instance of Buffer or ArrayBuffer. Received an instance of Object",
   "failures": [
     {
