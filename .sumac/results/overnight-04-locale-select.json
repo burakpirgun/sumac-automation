@@ -3,7 +3,7 @@
   "digest": "7bee320d66f1",
   "branch": "sumac/jobs/overnight-04-locale-select-7bee320d66f1",
   "attempt": 3,
-  "status": "diagnosing",
+  "status": "blocked",
   "workflow": "https://github.com/burakpirgun/sumac-automation/actions/runs/37594376460",
   "updatedAt": "2026-10-07T08:32:18.126Z",
   "feedback": "The \"string\" argument must be of type string or an instance of Buffer or ArrayBuffer. Received an instance of Object",
@@ -22,5 +22,66 @@
     }
   ],
   "handleId": null,
-  "diagnosisRunId": "run_06ghavfno7nap0ejku2nv6de01"
+  "diagnosisRunId": "run_06ghavfno7nap0ejku2nv6de01",
+  "diagnosis": {
+    "jobId": "overnight-04-locale-select",
+    "status": "needs_revision",
+    "plan": {
+      "summary": "All three attempts share an identical runtime error: a Node.js internal (likely crypto.createHash or fs.writeFile/similar) received a plain Object where a string/Buffer was expected. This means the function's return value or an intermediate value is being passed directly into a Node.js API that expects a string. The root cause is that the generated source file itself is being written incorrectly — the toolchain is passing the entire source-code object (e.g. {code:'...'} from a transpiler or code-gen step) instead of its string payload. The function logic itself may be correct, but the file-write or hash step upstream is not extracting the string from the object. The fix is to ensure the string payload is extracted before writing, and to audit the function implementation for any accidental object return paths.",
+      "steps": [
+        {
+          "action": "Inspect the build/write step that serialises the generated source. Confirm whether it calls something like writeFile(path, result) where result is the object returned by a code-generator (e.g. {code, map}) rather than result.code or String(result). Extract the string field before passing it to any Node API.",
+          "verification": "After the fix, the write call should receive a value for which typeof value === 'string' is true. Add a defensive assertion (if (typeof src !== 'string') throw new TypeError('expected string')) immediately before the write call and confirm it does not throw."
+        },
+        {
+          "action": "Audit the selectLocaleValue implementation for any code path that could return a non-string/non-null. Specifically check: (a) the proto check expression does not accidentally return the proto object itself, (b) the value-validation loop does not return an intermediate object, (c) the final return statements are exactly `return value` (string|null) or `return null`, never a wrapper object.",
+          "verification": "Unit-test the function directly in a REPL: selectLocaleValue({'en':'hello'}, 'en') must return the primitive 'hello'; selectLocaleValue({'en':null},'en') must return null; selectLocaleValue({},'en') must return null. typeof or === checks confirm primitives."
+        },
+        {
+          "action": "Replace any Object.getPrototypeOf({}) reference used as a comparison target with a locally captured variable at the top of the function body, e.g. `var plainProto = Object.getPrototypeOf({});`, then compare with ===. Ensure the forbidden identifier list is respected: no use of constructor, __proto__, or prototype as literal identifiers in the source text.",
+          "verification": "Grep/search the generated source text for each forbidden identifier. Confirm zero matches. Confirm the proto-check still correctly rejects arrays, class instances, and null-prototype objects that should be accepted vs rejected per spec."
+        },
+        {
+          "action": "Implement value validation with a simple for-in loop guarded by hasOwnProperty (or Object.keys iteration) that throws TypeError if any own enumerable value is neither a string nor null. Place this loop before the key lookup so it always runs even when the requested key is absent.",
+          "verification": "Call selectLocaleValue({'en': 42}, 'fr') and confirm a TypeError is thrown (not a silent null return), proving validation runs unconditionally."
+        },
+        {
+          "action": "For the own-property lookup, use Object.prototype.hasOwnProperty.call(localeMap, locale) to avoid relying on the object's own hasOwnProperty (which could be shadowed) and to avoid using any forbidden identifier. Return localeMap[locale] if present, else null.",
+          "verification": "Test with a map whose key is '__proto__' or 'constructor' as a string key (set via Object.defineProperty or computed assignment) and confirm the function returns the value without throwing or behaving unexpectedly."
+        },
+        {
+          "action": "After fixing the write step, re-run the full generation pipeline with verbose/debug logging enabled so the exact type of every value passed to Node built-ins is visible. Compare the log output to the expected string type before accepting the result.",
+          "verification": "No instance-of-Object error appears. The written file contains valid JS source text that can be parsed by node --check path/to/file.js without errors."
+        }
+      ],
+      "risks": [
+        "If the build tool wraps output in an object (e.g. Babel, esbuild, or a custom codegen returns {code, map}), silently coercing with toString() may include [object Object] in the file — always extract the named string property explicitly.",
+        "The forbidden-identifier constraint means Object.prototype.hasOwnProperty cannot be spelled out using 'prototype' as a literal token in comments or code; ensure the comment scrub covers comments, not just executable code.",
+        "Null-prototype objects (Object.create(null)) are valid localeMap inputs per spec; verify the proto comparison handles both null-proto (Object.getPrototypeOf is null) and plain-proto cases without conflating them.",
+        "If the validation loop uses for...in without a hasOwnProperty guard, inherited enumerable properties from a tampered Object.prototype could trigger false TypeError throws or be silently included.",
+        "Repeated identical failures across three attempts suggest the bug is in the scaffolding/harness, not the function body. Fixing only the function without fixing the harness will produce a fourth identical failure.",
+        "Using localeMap[locale] directly is safe for arbitrary string keys, but if locale is a symbol or non-string that passes the nonempty-string check due to a logic gap, the lookup could behave unexpectedly — ensure the typeof locale === 'string' check is strict and occurs before any property access.",
+        "If the environment runs the file through a linter or bundler after generation, forbidden identifiers in comments could still be flagged or cause pipeline failures — scrub comments as well as executable tokens.",
+        "Writing a source file that uses var/function declarations to avoid block-scoping edge cases is safer in generated code; ensure no let/const introduces a temporal dead zone that could cause subtle errors in unusual JS engine versions."
+      ]
+    },
+    "audit": {
+      "verdict": "revise",
+      "findings": [
+        "Root cause diagnosis is plausible: the error 'Received an instance of Object' strongly indicates the harness/build step passes a code-generator result object (e.g. {code,map}) directly to a Node.js API expecting a string, rather than extracting its string payload. However the plan never confirms this by actually inspecting the harness source, so the diagnosis remains a hypothesis.",
+        "Step 1 correctly targets the write/hash call but the proposed defensive assertion ('if typeof src !== string throw') would itself throw before any fix is applied and tells us nothing new unless it is placed after the extraction fix — the ordering and location must be specified more precisely.",
+        "The plan conflates two distinct problems: (a) the harness passing an object to a Node API, and (b) correctness of the selectLocaleValue function body. Steps 2–5 address (b) but do not establish whether (a) is actually fixed, which Step 6 alone attempts. The plan needs a concrete ordered sequence: fix harness first, verify file is written as a string, then verify function correctness.",
+        "Step 3 says 'Replace any Object.getPrototypeOf({}) reference' but the plan never shows what the current code looks like, so it is unclear whether this reference even exists in the generated source or lives in the harness. The fix target is ambiguous.",
+        "The forbidden-identifier risk note correctly flags 'prototype' appearing in Object.prototype.hasOwnProperty but then Step 5 literally spells out Object.prototype.hasOwnProperty.call(...) in the proposed fix — this directly uses the forbidden identifier 'prototype' as a token and would violate the constraint. An alternative such as capturing via a local alias (e.g. var hasProp = {}.hasOwnProperty; hasProp.call(...)) must be used instead.",
+        "Step 4 proposes 'for-in guarded by hasOwnProperty' but also says to avoid forbidden identifiers including 'constructor' and '__proto__'. The plan must explicitly specify the exact safe spelling (e.g. pre-captured alias) rather than leaving it open, because a naive hasOwnProperty reference on the object itself is both unsafe and potentially forbidden.",
+        "The null-prototype acceptance case is mentioned in risks but not addressed in any step. The plan must explicitly state the comparison logic: accept if proto === null OR proto === Object.getPrototypeOf({}), reject otherwise, and show this does not accidentally reject valid null-proto maps.",
+        "Verification for Step 5 proposes testing with '__proto__' and 'constructor' as string keys, but setting these via computed assignment (obj['__proto__'] = ...) on a plain object does not create an own enumerable property in all engines — Object.defineProperty or Object.create(null) with explicit property definition is needed. The verification method must be corrected.",
+        "The plan does not address whether the same forbidden-identifier scrub must apply to inline comments in the generated source. Risk item 7 mentions this but no step enforces it, leaving a gap between the identified risk and the proposed remediation.",
+        "The plan lacks a concrete rollback or isolation step: if after fixing the harness the function still fails, there is no step to isolate the function in a standalone test harness independent of the build pipeline, which would definitively distinguish harness bugs from function logic bugs across repeated failures."
+      ]
+    },
+    "executionPerformed": false,
+    "completedAt": "2026-10-07T08:33:17.674Z"
+  },
+  "diagnosisStatus": "completed"
 }
