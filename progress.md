@@ -133,3 +133,24 @@ Owner requested a fresh deployment test. Native deploy still returned411; harmle
 ## Current handoff — 2026-10-07 UTC
 
 The owner created private repository burakpirgun/sumac-automation. Source and deployment handoff are prepared for Claude Code cloud. Both Development tests passed; Production deployment and hosted execution remain unverified. Depot fallback launched a builder but could not connect through the previous environment network; local attempt was interrupted. See DEPLOYMENT.md for next steps.
+
+## Claude Code cloud retry — 2026-10-07 UTC
+
+Production deployment was **not** retried to completion: it could not start. No deployment version, no Production run IDs. Nothing changed in Trigger.dev.
+
+| Check | Result |
+| --- | --- |
+| `npm ci` | Failed: `registry.npmjs.org` is not in this environment's network allowlist (proxy 403 "Host not in allowlist"). Partial npm cache is incomplete (`npm ci --offline` → ENOTCACHED for `zod-validation-error`, a `@trigger.dev/core` dependency). |
+| `npm run check` | Failed only because `node_modules` is absent (`TS2688: Cannot find type definition file for 'node'`); not a source error. |
+| Trigger.dev CLI (`npx trigger.dev@4.7.3`) | Not runnable: same npm registry block. `npm run trigger:deploy` not executed. |
+| `api.trigger.dev` via `sumac-trigger-access` | Works. `GET /api/v2/whoami` → 200 for the owner account; `GET /api/v1/projects` lists `proj_vjirfqjbxrwdblvnjyjm` (sumac-automation, org Taste of Turkiye). Token behaves as a personal access token. |
+| Proxy header behavior | The proxy replaces any client `Authorization` header: a request with a placeholder `Bearer tr_pat_…` still returned 200. |
+| Production runs | `GET /api/v1/projects/proj_vjirfqjbxrwdblvnjyjm/runs?filter[env]=prod` → empty. Dev runs listed as COMPLETED (matches earlier record). Hosted execution remains unverified. |
+
+### Authentication mismatch
+
+The CLI expects a `TRIGGER_ACCESS_TOKEN` env var (or a `trigger login` profile). This environment provides neither; auth is injected only at the network layer. Because the proxy overwrites the header, the CLI should work with a **non-secret placeholder** such as `TRIGGER_ACCESS_TOKEN=tr_pat_` followed by dummy characters, plus `NODE_USE_ENV_PROXY=1` (Node 22.22 here). This is untested end to end because the CLI cannot be installed. Note: deploy also uploads to Trigger.dev's object storage host (and with `--depot-build`, Depot). Those hosts may also need to be allowlisted.
+
+### Owner action needed
+
+In the Claude Code cloud environment settings (Edit environment → Network access), allow `registry.npmjs.org` (for example, Custom with the default package-manager list kept). Then retry: `npm ci && npm run check`, then `TRIGGER_ACCESS_TOKEN=<placeholder> NODE_USE_ENV_PROXY=1 npm run trigger:deploy`. After that, trigger both tasks with `{}` in Production and record the results here. No secrets were printed or stored.
