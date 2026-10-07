@@ -2,9 +2,16 @@
   "jobId": "overnight-05-reference-keys",
   "digest": "69cc81c23cb8",
   "branch": "sumac/jobs/overnight-05-reference-keys-69cc81c23cb8",
-  "attempt": 1,
-  "status": "running",
+  "attempt": 2,
+  "status": "retry",
   "workflow": "https://github.com/burakpirgun/sumac-automation/actions/runs/37601052561",
-  "updatedAt": "2026-10-07T09:30:34.255Z",
-  "handleId": "run_06ghbcqh8idae48so9rjudv301"
+  "updatedAt": "2026-10-07T09:31:01.856Z",
+  "handleId": null,
+  "feedback": "Generated code uses a forbidden capability",
+  "failures": [
+    {
+      "attempt": 1,
+      "feedback": "Generated code uses a forbidden capability"
+    }
+  ]
 }
