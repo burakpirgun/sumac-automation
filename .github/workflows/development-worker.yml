@@ -29,11 +29,10 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run check
-      - run: node --test scripts/development-core.test.mjs
+      - run: node --test scripts/development-core.test.mjs scripts/advisory.test.mjs
       - name: Pick up and execute one queued job
         run: node scripts/development-worker.mjs
         env:
-          SUMAC_DIAGNOSTIC_RUN_ID: run_06gh8hftpm9v7gldf8pneae201
           GITHUB_TOKEN: ${{ github.token }}
           TRIGGER_ACCESS_TOKEN: ${{ secrets.TRIGGER_ACCESS_TOKEN }}
       - name: Save job results

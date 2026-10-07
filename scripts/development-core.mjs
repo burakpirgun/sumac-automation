@@ -14,7 +14,7 @@ export function jobDigest(job) { return createHash('sha256').update(JSON.stringi
 export function resultBranch(job) { return `sumac/jobs/${job.id}-${jobDigest(job)}`; }
 export function validateProposal(result, job) {
   if (!result || result.jobId !== job.id || typeof result.source !== 'string' || result.source.length > 20000 || !result.source.length) throw new Error('Invalid development proposal');
-  if (result.audit?.verdict !== 'pass') throw new Error('Source audit did not pass');
+  if (result.audit?.verdict !== 'pass') throw new Error(`Source audit did not pass: ${Array.isArray(result?.audit?.findings) ? result.audit.findings.slice(0, 5).join('; ') : 'no findings'}`);
   // Reject privileged and dynamic capabilities even though execution is also isolated.
   if (/\b(import|require|process|globalThis|eval|Function|fetch|WebSocket|constructor|__proto__|prototype)\b/.test(result.source)) throw new Error('Generated code uses a forbidden capability');
   if (!new RegExp(`export\\s+(?:function\\s+${job.exportName}\\b|const\\s+${job.exportName}\\b)`).test(result.source)) throw new Error('Expected named export is missing');
