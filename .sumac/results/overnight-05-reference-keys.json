@@ -6,7 +6,7 @@
   "status": "running",
   "workflow": "https://github.com/burakpirgun/sumac-automation/actions/runs/37601052561",
   "updatedAt": "2026-10-07T09:31:26.177Z",
-  "handleId": null,
+  "handleId": "run_06ghbd0ru1uc3328bjeuag8e01",
   "feedback": "Generated code uses a forbidden capability",
   "failures": [
     {
