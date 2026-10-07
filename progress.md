@@ -158,3 +158,28 @@ In the Claude Code cloud environment settings (Edit environment → Network acce
 ## Retry after allowlist change — 2026-10-07 UTC
 
 Owner reported adding `registry.npmjs.org`. In this still-running session, the proxy keeps refusing it: `npm ci` gets 403 on `zod-validation-error-5.0.0.tgz`, and repeated direct requests return "Host not in allowlist: registry.npmjs.org". `api.trigger.dev` still returns 200. The updated network policy is likely applied only when a session or container starts. Deploy was not run, and there are still no Production deployments or runs. Next: start a new cloud session on this branch with the updated environment, then follow the steps under "Owner action needed" above.
+
+## New session retry — 2026-10-07 UTC
+
+`https://registry.npmjs.org/typescript` returned HTTP 200, so the updated allowlist is now active.
+
+| Check | Result |
+| --- | --- |
+| `npm ci` | Passed |
+| `npm run check` | Passed |
+| `npm run trigger:deploy` (placeholder `TRIGGER_ACCESS_TOKEN`, `NODE_USE_ENV_PROXY=1`, CLI 4.7.3) | **Failed.** Build passed locally (`Successfully built code`), then `Failed to start deployment: Invalid API key`. |
+| Debug log | `Initializing prod environment for project proj_vjirfqjbxrwdblvnjyjm` passed (PAT-authenticated call). The next call, `Failed to fetch deploy settings`, returned 401 `Invalid API key`. The CLI then fell back to the Depot path and failed at deployment start with the same error. |
+| Production deployment version | None. No deployment was created. |
+| Production runs | None. Tasks are not deployed, so `sumac-health-check` and `sumac-claude-access-check` were not run in Production. |
+
+### Diagnosis (likely, not fully proven)
+
+After the PAT-authenticated environment lookup, the CLI switches to the Production environment's API key (`tr_prod_…`) for deployment calls. As recorded above, the proxy replaces any client `Authorization` header with the injected PAT. The deployment endpoints therefore receive a PAT where an environment key is expected and reject it as `Invalid API key`. A direct header-behavior probe was blocked by this session's safety classifier as credential exploration, so the probe was not run. The placeholder-token approach clears the first step but cannot complete a deploy in this setup.
+
+### Options for the owner
+
+1. **Recommended:** Configure the environment's network secret for `api.trigger.dev` to pass through, rather than overwrite, requests that already carry a `tr_prod_` bearer, or to inject only on `/api/v1/projects/*` and `/api/v2/whoami`. Then rerun the same command.
+2. Deploy from GitHub Actions or the owner's computer. Use a `TRIGGER_ACCESS_TOKEN` repository secret (for example, the official Trigger.dev GitHub Action). Then trigger both tasks with `{}` in Production.
+3. Explicitly approve a header-behavior probe in this session. Only status codes would be printed.
+
+No secrets were printed or stored. Nothing changed in Trigger.dev.
