@@ -38,6 +38,7 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run check
+      - run: node --test scripts/development-core.test.mjs
       - name: Deploy
         run: npx --yes trigger.dev@4.7.3 deploy --env prod --skip-update-check
       - name: Run Production tests

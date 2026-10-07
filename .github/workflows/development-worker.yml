@@ -1,0 +1,42 @@
+name: Sumac development worker
+on:
+  workflow_dispatch:
+  workflow_run:
+    workflows: ["Deploy Trigger.dev (Production)"]
+    types: [completed]
+concurrency:
+  group: sumac-development-worker
+  cancel-in-progress: false
+permissions:
+  contents: write
+  pull-requests: write
+jobs:
+  work:
+    if: github.event_name == 'workflow_dispatch' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main')
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run check
+      - run: node --test scripts/development-core.test.mjs
+      - name: Pick up and execute one queued job
+        run: node scripts/development-worker.mjs
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          TRIGGER_ACCESS_TOKEN: ${{ secrets.TRIGGER_ACCESS_TOKEN }}
+      - name: Save job results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sumac-development-results
+          path: .sumac-run/
+          if-no-files-found: ignore
+          retention-days: 14
