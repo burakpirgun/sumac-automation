@@ -3,8 +3,33 @@
   "digest": "67152cf61169",
   "branch": "sumac/jobs/overnight-03-resume-compatible-67152cf61169",
   "attempt": 1,
-  "status": "running",
+  "status": "passed",
   "workflow": "https://github.com/burakpirgun/sumac-automation/actions/runs/37587799077",
   "updatedAt": "2026-10-07T07:31:16.865Z",
-  "handleId": "run_06ghahgqbthdokgjvbhb8ibe01"
+  "handleId": "run_06ghahgqbthdokgjvbhb8ibe01",
+  "resumedExistingRun": false,
+  "tests": {
+    "passed": 17,
+    "network": "none",
+    "credentials": "none",
+    "containerRoot": "read-only"
+  },
+  "audit": {
+    "verdict": "pass",
+    "findings": [
+      "All acceptance cases are correctly handled by the implementation logic.",
+      "Schema validation correctly rejects 0, non-integers (1.5), strings ('1'), null, and non-numbers (false).",
+      "String validation correctly rejects empty strings, null, non-string types, and strings with leading/trailing whitespace.",
+      "Strict equality (===) is used for all comparisons, ensuring no coercion or normalization occurs.",
+      "The try/catch wrapper ensures the function never throws under any input.",
+      "No imports, side effects, global mutation, or public strings are present.",
+      "The function signature uses 'unknown' for all parameters as required.",
+      "TypeScript compatibility is strict: type guards narrow unknown to number/string before comparison.",
+      "The implementation is self-contained with no external dependencies.",
+      "Edge case where v.trim() could theoretically throw is safely impossible since typeof v === 'string' is checked first."
+    ]
+  },
+  "summary": "Implements isResumeCompatible as a pure exported function. It validates that both schema arguments are finite positive integers, and that all four string arguments (recipe, revision, locale pairs) are non-empty strings with no leading/trailing whitespace. Returns true only when every stored/current pair matches strictly and case-sensitively. Returns false on any validation failure and never throws.",
+  "generationRunId": "run_06ghahgqbthdokgjvbhb8ibe01",
+  "completedAt": "2026-10-07T07:31:43.056Z"
 }
