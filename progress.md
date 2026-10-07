@@ -286,3 +286,7 @@ This is a working unattended utility-development pipeline, not unrestricted webs
 
 ## Retry and advisor escalation policy — 2026-10-07
 User requested an initial attempt plus two repair attempts. Active development jobs now use three total attempts, retaining per-attempt failure feedback. After the second unsuccessful repair, the worker invokes the existing advisor/auditor task for root-cause diagnosis, checkpoints its run ID, and records findings before marking the job blocked. Existing passed/blocked revisions remain terminal; legacy manifests retain their digests. No new account or provider was added. Local policy tests and type checks are recorded separately from hosted execution.
+
+
+## Actions token permission verified — 2026-10-07
+After the owner saved the repository setting, workflow run 37565246918 successfully created draft PR #5 with its own GITHUB_TOKEN, then closed the diagnostic PR. The diagnostic branch was retained. Type checks and worker tests passed. The worker found no queued jobs and made no Claude calls. This verifies Actions-created pull requests without a replacement token or website changes.
