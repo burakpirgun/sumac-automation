@@ -31,5 +31,6 @@
   },
   "summary": "Implements isResumeCompatible as a pure exported function. It validates that both schema arguments are finite positive integers, and that all four string arguments (recipe, revision, locale pairs) are non-empty strings with no leading/trailing whitespace. Returns true only when every stored/current pair matches strictly and case-sensitively. Returns false on any validation failure and never throws.",
   "generationRunId": "run_06ghahgqbthdokgjvbhb8ibe01",
-  "completedAt": "2026-10-07T07:31:43.056Z"
+  "completedAt": "2026-10-07T07:31:43.056Z",
+  "pullRequestUrl": "https://github.com/burakpirgun/sumac-automation/pull/8"
 }
