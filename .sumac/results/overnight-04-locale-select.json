@@ -21,5 +21,6 @@
       "feedback": "The \"string\" argument must be of type string or an instance of Buffer or ArrayBuffer. Received an instance of Object"
     }
   ],
-  "handleId": null
+  "handleId": null,
+  "diagnosisRunId": "run_06ghavfno7nap0ejku2nv6de01"
 }
