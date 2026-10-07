@@ -154,3 +154,7 @@ The CLI expects a `TRIGGER_ACCESS_TOKEN` env var (or a `trigger login` profile).
 ### Owner action needed
 
 In the Claude Code cloud environment settings (Edit environment → Network access), allow `registry.npmjs.org` (for example, Custom with the default package-manager list kept). Then retry: `npm ci && npm run check`, then `TRIGGER_ACCESS_TOKEN=<placeholder> NODE_USE_ENV_PROXY=1 npm run trigger:deploy`. After that, trigger both tasks with `{}` in Production and record the results here. No secrets were printed or stored.
+
+## Retry after allowlist change — 2026-10-07 UTC
+
+Owner reported adding `registry.npmjs.org`. In this still-running session, the proxy keeps refusing it: `npm ci` gets 403 on `zod-validation-error-5.0.0.tgz`, and repeated direct requests return "Host not in allowlist: registry.npmjs.org". `api.trigger.dev` still returns 200. The updated network policy is likely applied only when a session or container starts. Deploy was not run, and there are still no Production deployments or runs. Next: start a new cloud session on this branch with the updated environment, then follow the steps under "Owner action needed" above.
