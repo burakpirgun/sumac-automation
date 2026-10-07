@@ -1,0 +1,27 @@
+{
+  "id": "retry-escalation-test",
+  "objective": "Controlled diagnostic test only: implement a pure deterministic function diagnosticValue(value: number) returning value. The fixed acceptance cases deliberately contradict one another for identical input. Do not use state, randomness, external resources, or bypass checks. Report the inconsistency honestly; this job must fail so we can verify two repairs followed by advisor diagnosis.",
+  "exportName": "diagnosticValue",
+  "cases": [
+    {
+      "args": [
+        1
+      ],
+      "expected": 1
+    },
+    {
+      "args": [
+        1
+      ],
+      "expected": 2
+    },
+    {
+      "args": [
+        1
+      ],
+      "expected": 3
+    }
+  ],
+  "maxAttempts": 3,
+  "revision": 1
+}
