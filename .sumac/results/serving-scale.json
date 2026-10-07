@@ -3,7 +3,7 @@
   "digest": "e1abb67fea66",
   "branch": "sumac/jobs/serving-scale-e1abb67fea66",
   "attempt": 1,
-  "status": "running",
+  "status": "passed",
   "workflow": "https://github.com/burakpirgun/sumac-automation/actions/runs/37564701543",
   "updatedAt": "2026-10-07T03:00:46.099Z",
   "handleId": "run_06gh8ir8t38ile7o318o7hq201",
@@ -30,8 +30,9 @@
   },
   "summary": "Implements scaleIngredientAmount which validates all three inputs are finite numbers, enforces nonnegativity on amount and strict positivity on both servings values, computes the scaled result via multiplication by the ratio targetServings/originalServings, rounds to three decimal places using Math.round, and throws if the result is not finite.",
   "generationRunId": "run_06gh8ir8t38ile7o318o7hq201",
-  "completedAt": "2026-10-07T02:57:51.887Z",
+  "completedAt": "2026-10-07T03:00:55.185Z",
   "pullRequestStatus": "unavailable; verified branch retained",
   "recoveryTest": "Simulate an interrupted handoff after completed generation; resume the existing task without new model calls",
-  "pullRequestUrl": "https://github.com/burakpirgun/sumac-automation/pull/4"
+  "pullRequestUrl": "https://github.com/burakpirgun/sumac-automation/pull/4",
+  "resumedExistingRun": true
 }
