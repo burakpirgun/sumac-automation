@@ -31,5 +31,6 @@
   },
   "summary": "Implements remainingTimerSeconds(deadlineMs, nowMs) which validates that both inputs are finite nonnegative numbers (throwing on invalid input), then returns Math.max(0, Math.ceil((deadlineMs - nowMs) / 1000)) so that past/reached deadlines return zero and fractional positive seconds round up.",
   "generationRunId": "run_06gha4beu1c8pmluebf1hjb201",
-  "completedAt": "2026-10-07T06:34:05.651Z"
+  "completedAt": "2026-10-07T06:34:05.651Z",
+  "pullRequestUrl": "https://github.com/burakpirgun/sumac-automation/pull/7"
 }
