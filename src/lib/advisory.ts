@@ -10,6 +10,17 @@ export const auditSchema = z.object({
   findings: z.array(z.string()).max(30),
 }).strict();
 
+// Anthropic grammar supports types/objects/enums but not all Zod constraints.
+// Retain all original constraints for local validation after the response.
+export function providerSchema(value: unknown): unknown {
+  if (Array.isArray(value)) return value.map(providerSchema);
+  if (value && typeof value === 'object') {
+    const constraints = new Set(['$schema', 'minLength', 'maxLength', 'minItems', 'maxItems', 'minimum', 'maximum']);
+    return Object.fromEntries(Object.entries(value).filter(([key]) => !constraints.has(key)).map(([key, child]) => [key, providerSchema(child)]));
+  }
+  return value;
+}
+
 export async function askClaude<T>(system: string, input: unknown, schema: z.ZodType<T>): Promise<T> {
   const key = process.env.ANTHROPIC_API_KEY;
   if (!key) throw new Error('ANTHROPIC_API_KEY is missing');
@@ -17,7 +28,8 @@ export async function askClaude<T>(system: string, input: unknown, schema: z.Zod
     method: 'POST',
     headers: { 'content-type': 'application/json', 'x-api-key': key, 'anthropic-version': '2023-06-01' },
     body: JSON.stringify({ model: 'claude-sonnet-4-6', max_tokens: 4096, system,
-      messages: [{ role: 'user', content: JSON.stringify(input) }] }),
+      messages: [{ role: 'user', content: JSON.stringify(input) }],
+      output_config: { format: { type: 'json_schema', schema: providerSchema(z.toJSONSchema(schema)) } } }),
     signal: AbortSignal.timeout(60_000),
   });
   if (!response.ok) throw new Error(`Claude advisory request failed: HTTP ${response.status}`);
