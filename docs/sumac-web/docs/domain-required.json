@@ -1,0 +1,124 @@
+{
+  "tasteofturkiye.org": {
+    "binding": {
+      "name": "tasteofturkiye.org",
+      "apexName": "tasteofturkiye.org",
+      "projectId": "prj_XXjgGSF6TNhja81pbgWm4XZktDK5",
+      "redirect": null,
+      "redirectStatusCode": null,
+      "gitBranch": null,
+      "customEnvironmentId": null,
+      "updatedAt": 1791343384060,
+      "createdAt": 1791343384060,
+      "verified": true
+    },
+    "configuration": {
+      "configuredBy": null,
+      "nameservers": [
+        "nsd1.squarespacedns.com",
+        "nsd4.squarespacedns.com",
+        "nsd3.squarespacedns.com",
+        "nsd2.squarespacedns.com"
+      ],
+      "serviceType": "external",
+      "cnames": [],
+      "aValues": [
+        "198.185.159.145",
+        "198.49.23.145",
+        "198.185.159.144",
+        "198.49.23.144"
+      ],
+      "conflicts": [],
+      "acceptedChallenges": [],
+      "recommendedIPv4": [
+        {
+          "rank": 1,
+          "value": [
+            "216.150.1.1",
+            "216.150.16.1"
+          ]
+        },
+        {
+          "rank": 2,
+          "value": [
+            "76.76.21.21"
+          ]
+        }
+      ],
+      "recommendedCNAME": [
+        {
+          "rank": 1,
+          "value": "4096ef8b853986a9.vercel-dns-016.com."
+        },
+        {
+          "rank": 2,
+          "value": "cname.vercel-dns.com."
+        }
+      ],
+      "ipStatus": null,
+      "misconfigured": true
+    }
+  },
+  "www.tasteofturkiye.org": {
+    "binding": {
+      "name": "www.tasteofturkiye.org",
+      "apexName": "tasteofturkiye.org",
+      "projectId": "prj_XXjgGSF6TNhja81pbgWm4XZktDK5",
+      "redirect": "tasteofturkiye.org",
+      "redirectStatusCode": 308,
+      "gitBranch": null,
+      "customEnvironmentId": null,
+      "updatedAt": 1791343387033,
+      "createdAt": 1791343387033,
+      "verified": true
+    },
+    "configuration": {
+      "configuredBy": null,
+      "nameservers": [
+        "nsd3.squarespacedns.com",
+        "nsd1.squarespacedns.com",
+        "nsd2.squarespacedns.com",
+        "nsd4.squarespacedns.com"
+      ],
+      "serviceType": "external",
+      "cnames": [
+        "ext-sq.squarespace.com."
+      ],
+      "aValues": [
+        "198.185.159.144",
+        "198.49.23.145",
+        "198.185.159.145",
+        "198.49.23.144"
+      ],
+      "conflicts": [],
+      "acceptedChallenges": [],
+      "recommendedIPv4": [
+        {
+          "rank": 1,
+          "value": [
+            "216.150.1.1",
+            "216.150.16.1"
+          ]
+        },
+        {
+          "rank": 2,
+          "value": [
+            "76.76.21.21"
+          ]
+        }
+      ],
+      "recommendedCNAME": [
+        {
+          "rank": 1,
+          "value": "4096ef8b853986a9.vercel-dns-016.com."
+        },
+        {
+          "rank": 2,
+          "value": "cname.vercel-dns.com."
+        }
+      ],
+      "ipStatus": null,
+      "misconfigured": true
+    }
+  }
+}

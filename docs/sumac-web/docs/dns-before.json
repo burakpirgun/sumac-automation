@@ -1,0 +1,203 @@
+{
+  "capturedAt": "2026-10-07T03:20:25.601200+00:00",
+  "domain": "tasteofturkiye.org",
+  "scope": "Publicly observable records only; not a complete authoritative zone export",
+  "records": {
+    "tasteofturkiye.org": {
+      "NS": {
+        "status": 0,
+        "answers": [
+          {
+            "name": "tasteofturkiye.org.",
+            "type": 2,
+            "TTL": 21600,
+            "data": "nsd1.squarespacedns.com."
+          },
+          {
+            "name": "tasteofturkiye.org.",
+            "type": 2,
+            "TTL": 21600,
+            "data": "nsd3.squarespacedns.com."
+          },
+          {
+            "name": "tasteofturkiye.org.",
+            "type": 2,
+            "TTL": 21600,
+            "data": "nsd2.squarespacedns.com."
+          },
+          {
+            "name": "tasteofturkiye.org.",
+            "type": 2,
+            "TTL": 21600,
+            "data": "nsd4.squarespacedns.com."
+          }
+        ]
+      },
+      "A": {
+        "status": 0,
+        "answers": [
+          {
+            "name": "tasteofturkiye.org.",
+            "type": 1,
+            "TTL": 14400,
+            "data": "198.49.23.145"
+          },
+          {
+            "name": "tasteofturkiye.org.",
+            "type": 1,
+            "TTL": 14400,
+            "data": "198.185.159.144"
+          },
+          {
+            "name": "tasteofturkiye.org.",
+            "type": 1,
+            "TTL": 14400,
+            "data": "198.49.23.144"
+          },
+          {
+            "name": "tasteofturkiye.org.",
+            "type": 1,
+            "TTL": 14400,
+            "data": "198.185.159.145"
+          }
+        ]
+      },
+      "AAAA": {
+        "status": 0,
+        "answers": []
+      },
+      "CNAME": {
+        "status": 0,
+        "answers": []
+      },
+      "MX": {
+        "status": 0,
+        "answers": []
+      },
+      "TXT": {
+        "status": 0,
+        "answers": [
+          {
+            "name": "tasteofturkiye.org.",
+            "type": 16,
+            "TTL": 14400,
+            "data": "google-site-verification=VJOzv8StMRWpLWRyit5UvNswK56U2axNqmBcPc-2BnE"
+          },
+          {
+            "name": "tasteofturkiye.org.",
+            "type": 16,
+            "TTL": 14400,
+            "data": "v=spf1 -all"
+          }
+        ]
+      },
+      "CAA": {
+        "status": 0,
+        "answers": []
+      }
+    },
+    "www.tasteofturkiye.org": {
+      "NS": {
+        "status": 0,
+        "answers": [
+          {
+            "name": "www.tasteofturkiye.org.",
+            "type": 5,
+            "TTL": 14400,
+            "data": "ext-sq.squarespace.com."
+          }
+        ]
+      },
+      "A": {
+        "status": 0,
+        "answers": [
+          {
+            "name": "www.tasteofturkiye.org.",
+            "type": 5,
+            "TTL": 14400,
+            "data": "ext-sq.squarespace.com."
+          },
+          {
+            "name": "ext-sq.squarespace.com.",
+            "type": 1,
+            "TTL": 147,
+            "data": "198.185.159.145"
+          },
+          {
+            "name": "ext-sq.squarespace.com.",
+            "type": 1,
+            "TTL": 147,
+            "data": "198.49.23.144"
+          },
+          {
+            "name": "ext-sq.squarespace.com.",
+            "type": 1,
+            "TTL": 147,
+            "data": "198.49.23.145"
+          },
+          {
+            "name": "ext-sq.squarespace.com.",
+            "type": 1,
+            "TTL": 147,
+            "data": "198.185.159.144"
+          }
+        ]
+      },
+      "AAAA": {
+        "status": 0,
+        "answers": [
+          {
+            "name": "www.tasteofturkiye.org.",
+            "type": 5,
+            "TTL": 14400,
+            "data": "ext-sq.squarespace.com."
+          }
+        ]
+      },
+      "CNAME": {
+        "status": 0,
+        "answers": [
+          {
+            "name": "www.tasteofturkiye.org.",
+            "type": 5,
+            "TTL": 14400,
+            "data": "ext-sq.squarespace.com."
+          }
+        ]
+      },
+      "MX": {
+        "status": 0,
+        "answers": [
+          {
+            "name": "www.tasteofturkiye.org.",
+            "type": 5,
+            "TTL": 14400,
+            "data": "ext-sq.squarespace.com."
+          }
+        ]
+      },
+      "TXT": {
+        "status": 0,
+        "answers": [
+          {
+            "name": "www.tasteofturkiye.org.",
+            "type": 5,
+            "TTL": 14399,
+            "data": "ext-sq.squarespace.com."
+          }
+        ]
+      },
+      "CAA": {
+        "status": 0,
+        "answers": [
+          {
+            "name": "www.tasteofturkiye.org.",
+            "type": 5,
+            "TTL": 14399,
+            "data": "ext-sq.squarespace.com."
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,162 @@
+[
+  {
+    "width": 320,
+    "section": "home",
+    "horizontalOverflow": false,
+    "verticalOverflow": true,
+    "robots": "noindex, nofollow",
+    "images": 221,
+    "brokenImages": [],
+    "errors": []
+  },
+  {
+    "width": 320,
+    "section": "#recipes",
+    "horizontalOverflow": false,
+    "verticalOverflow": false,
+    "robots": "noindex, nofollow",
+    "images": 221,
+    "brokenImages": [],
+    "errors": []
+  },
+  {
+    "width": 320,
+    "section": "#places",
+    "horizontalOverflow": false,
+    "verticalOverflow": false,
+    "robots": "noindex, nofollow",
+    "images": 221,
+    "brokenImages": [],
+    "errors": []
+  },
+  {
+    "width": 320,
+    "section": "#pantry",
+    "horizontalOverflow": false,
+    "verticalOverflow": false,
+    "robots": "noindex, nofollow",
+    "images": 221,
+    "brokenImages": [],
+    "errors": []
+  },
+  {
+    "width": 390,
+    "section": "home",
+    "horizontalOverflow": false,
+    "verticalOverflow": true,
+    "robots": "noindex, nofollow",
+    "images": 221,
+    "brokenImages": [],
+    "errors": []
+  },
+  {
+    "width": 390,
+    "section": "#recipes",
+    "horizontalOverflow": false,
+    "verticalOverflow": false,
+    "robots": "noindex, nofollow",
+    "images": 221,
+    "brokenImages": [],
+    "errors": []
+  },
+  {
+    "width": 390,
+    "section": "#places",
+    "horizontalOverflow": false,
+    "verticalOverflow": false,
+    "robots": "noindex, nofollow",
+    "images": 221,
+    "brokenImages": [],
+    "errors": []
+  },
+  {
+    "width": 390,
+    "section": "#pantry",
+    "horizontalOverflow": false,
+    "verticalOverflow": false,
+    "robots": "noindex, nofollow",
+    "images": 221,
+    "brokenImages": [],
+    "errors": []
+  },
+  {
+    "width": 768,
+    "section": "home",
+    "horizontalOverflow": false,
+    "verticalOverflow": true,
+    "robots": "noindex, nofollow",
+    "images": 221,
+    "brokenImages": [],
+    "errors": []
+  },
+  {
+    "width": 768,
+    "section": "#recipes",
+    "horizontalOverflow": false,
+    "verticalOverflow": false,
+    "robots": "noindex, nofollow",
+    "images": 221,
+    "brokenImages": [],
+    "errors": []
+  },
+  {
+    "width": 768,
+    "section": "#places",
+    "horizontalOverflow": false,
+    "verticalOverflow": false,
+    "robots": "noindex, nofollow",
+    "images": 221,
+    "brokenImages": [],
+    "errors": []
+  },
+  {
+    "width": 768,
+    "section": "#pantry",
+    "horizontalOverflow": false,
+    "verticalOverflow": false,
+    "robots": "noindex, nofollow",
+    "images": 221,
+    "brokenImages": [],
+    "errors": []
+  },
+  {
+    "width": 1440,
+    "section": "home",
+    "horizontalOverflow": false,
+    "verticalOverflow": true,
+    "robots": "noindex, nofollow",
+    "images": 221,
+    "brokenImages": [],
+    "errors": []
+  },
+  {
+    "width": 1440,
+    "section": "#recipes",
+    "horizontalOverflow": false,
+    "verticalOverflow": false,
+    "robots": "noindex, nofollow",
+    "images": 221,
+    "brokenImages": [],
+    "errors": []
+  },
+  {
+    "width": 1440,
+    "section": "#places",
+    "horizontalOverflow": false,
+    "verticalOverflow": false,
+    "robots": "noindex, nofollow",
+    "images": 221,
+    "brokenImages": [],
+    "errors": []
+  },
+  {
+    "width": 1440,
+    "section": "#pantry",
+    "horizontalOverflow": false,
+    "verticalOverflow": false,
+    "robots": "noindex, nofollow",
+    "images": 221,
+    "brokenImages": [],
+    "errors": []
+  }
+]
